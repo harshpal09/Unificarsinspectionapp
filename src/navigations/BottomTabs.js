@@ -52,8 +52,19 @@ export default function BottomTabs() {
        name="AccountSection" 
        component={AccountSection} 
        options={{
-        headerShown: false,
-        tabBarLabel: 'Account',
+        headerShown: true,
+          headerStyle:{
+            backgroundColor:THEME_COLOR,
+            borderBottomColor:THEME_COLOR
+          },
+          headerTitleStyle:{
+            color:"#FFF",
+            alignSelf:'flex-start',
+            fontWeight:"bold"
+            // backgroundColor:'red',
+            // width:'100%'
+          },
+          headerTitle: 'Profile',
         tabBarIcon: ({color, size}) => (
           <MaterialCommunityIcons name="account-circle" color={color} size={size} />
         ),

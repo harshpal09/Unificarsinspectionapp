@@ -3,6 +3,6 @@ import GlobalSlice from "../features/GlobalSlice";
 
 export const store = configureStore({
     reducer: {
-        isUserLoggedIn  : GlobalSlice
+        global  : GlobalSlice
     },
   })

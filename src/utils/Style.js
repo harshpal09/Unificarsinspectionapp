@@ -75,12 +75,35 @@ export const globalStyles = StyleSheet.create({
         shadowColor: '#000', // Shadow color
         shadshowOffset: {width: 0, height: -20}, // Shadow offset
         shadowOpacity: 0.4, // Shadow opacity (0 to 1)
-        shadowRadius: 8, //
+        shadowRadius: 8, //       
       },
       childDetailContainer: {
         // backgroundColor: LIGHT_BLUE,
         width: '100%',
         height: 40,
         borderRadius: 10,
+      },
+      profileHeadings: {
+        alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        // width:width-50,
+        width: '100%',
+        paddingHorizontal: 10,
+        padding: 10,
+        // borderBottomWidth: 0.5,
+        // backgroundColor:'blue',
+      },
+      profileHeadingText: {
+        textAlignVertical: 'center',
+        marginLeft: 0,
+        color: '#6D6D6D',
+        // width:DeviceInfo.isTablet()?Dimensions.get('screen').width/2.4: Dimensions.get('screen').width/2.8,
+        fontFamily: 'Baskervville-Regular',
+        fontSize: 16,
+        // backgroundColor:'red'
+      },
+      profileIcon: {
+        color: 'grey',
       },
 })

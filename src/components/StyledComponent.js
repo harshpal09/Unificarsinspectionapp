@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components/native';
+import { THEME_COLOR } from '../utils/Style';
 
 // Create a styled component
 export const MainContainer = styled.SafeAreaView`
@@ -21,6 +22,14 @@ export const FloatingButton = styled.TouchableOpacity`
   border-radius:30px;
   bottom:10px;
 `;
+export const StyledButton = styled.TouchableOpacity`
+  width: 80%;
+  height:40px;
+  background-color:#FF691F;
+  border-radius:30px;
+  padding:5px 0px 5px 0px;
+  margin: 20px 0px 20px  0px;
+`;
 
 export const ItemContainer = styled.TouchableOpacity`
   width: 95%;
@@ -29,6 +38,16 @@ export const ItemContainer = styled.TouchableOpacity`
   margin-top: 10px; /* Add top margin if needed */
   padding: 5px; /* Add padding for content */
   border-radius: 8px; /* Add border-radius for rounded corners */
+  border: 1px solid lightgrey; /* Add a 1px solid black border */
+  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.3);
+`;
+export const ProfileContainer = styled.View`
+  width: 90%;
+  background-color: white;
+  margin: 0 auto; /* Center the container horizontally */
+  margin-top: -50px; /* Add top margin if needed */
+  padding: 5px; /* Add padding for content */
+  border-radius: 15px; /* Add border-radius for rounded corners */
   border: 1px solid lightgrey; /* Add a 1px solid black border */
   box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.3);
 `;
@@ -47,8 +66,21 @@ export const DarkTextMedium = styled.Text`
   font-size: 12px;
   font-weight: 700;
 `;
+export const DarkTextLarge = styled.Text`
+  color: black;
+  font-size: 16px;
+  font-weight: 700;
+`;
 export const DarkTextSmall = styled.Text`
   color: black;
   font-size: 10px;
   font-weight: 700;
+`;
+export const StyledTextInput = styled.TextInput`
+  width: 95%;
+  height: 40px;
+  font-size: 16px;
+  color: #333;
+  border-bottom-width: 1px;
+  margin: 10px 0px 10px  0px;
 `;

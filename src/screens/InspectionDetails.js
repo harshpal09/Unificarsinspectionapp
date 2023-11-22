@@ -1,11 +1,12 @@
 import { SafeAreaView, StyleSheet, Text, View ,Image,Button, FlatList} from 'react-native'
 import React, { useState } from 'react'
 import { Container ,ItemContainer,FloatingButton,FadeTextMedium,DarkTextMedium,FadeTextSmall,DarkTextSmall} from '../components/StyledComponent'
-import { globalStyles ,width,height} from '../utils/Style';
+import { globalStyles ,width,height,THEME_COLOR} from '../utils/Style';
 import WizardProgressBar from '../components/WizardProgressBar';
 import DetailsChild from '../components/DetailsChild';
+import { useSelector } from 'react-redux';
 
-export default function InspectionDetails() {
+export default function InspectionDetails({navigation}) {
   const [data, setData] = useState([
     {
       name: 'Harsh Pal',
@@ -194,7 +195,8 @@ export default function InspectionDetails() {
   const [currentStep, setCurrentStep] = useState(0);
 
   const steps = ['Step 1', 'Step 2', 'Step 3', 'Step 4']; // Add your steps here
-
+  const profileDetails = useSelector((state)=> state.global.profileDetails)
+  console.log("profile details =>",profileDetails);
   const handleNext = () => {
     setCurrentStep((prevStep) => Math.min(prevStep + 1, steps.length - 1));
   };
@@ -211,7 +213,7 @@ export default function InspectionDetails() {
             style={[globalStyles.rowContainer]}>
             <View style={[{width: '45%', backgroundColor: 'transparent'}]}>
               <FadeTextSmall style={[{padding: 5}]}>
-                {data[0].date}
+                {profileDetails.date}
               </FadeTextSmall>
               <View
                 style={[
@@ -230,8 +232,8 @@ export default function InspectionDetails() {
                   }}
                 />
                 <View style={[{width: '70%', padding: 10}]}>
-                  <DarkTextMedium>{data[0].name}</DarkTextMedium>
-                  <FadeTextMedium>{data[0].customer}</FadeTextMedium>
+                  <DarkTextMedium>{profileDetails.name}</DarkTextMedium>
+                  <FadeTextMedium>{profileDetails.customer}</FadeTextMedium>
                 </View>
               </View>
             </View>
@@ -239,7 +241,7 @@ export default function InspectionDetails() {
               <DarkTextSmall style={[{padding: 5}]}>
                 Inspection Report
               </DarkTextSmall>
-              {data[0].car_details.map((val,i)=>(
+              {profileDetails.car_details.map((val,i)=>(
                 <View
                 style={[
                   {width: '100%', backgroundColor: 'transparent'},
@@ -268,10 +270,10 @@ export default function InspectionDetails() {
       </Container>
       <Container style={{height:100}} >
       <View style={[globalStyles.flexBox,]}>
-        <WizardProgressBar />
+        <WizardProgressBar navigation={navigation}  />
       </View>
       </Container>
-      <Container>
+      {/* <Container>
         <FlatList 
           style={{width:'100%'}}
           data={item}
@@ -280,10 +282,10 @@ export default function InspectionDetails() {
           }
         />
       </Container>
-      
-      <FloatingButton style={[globalStyles.flexBox]} activeOpacity={0.93}>
+   
+      <FloatingButton style={[globalStyles.flexBox]} activeOpacity={0.93} onPress={()=> navigation.navigate('step_1') }>
         <Text style={{fontWeight:'800',fontSize:14,color:'white'}}>Start Inspection</Text>
-      </FloatingButton>
+      </FloatingButton> */}
       
  
     </SafeAreaView>

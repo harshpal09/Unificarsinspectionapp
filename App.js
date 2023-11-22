@@ -10,7 +10,7 @@ import { BottomTabs, Login, StackNavigation } from './export';
 
 
 const App = () => {
-  const isuserLoggedIn = useSelector((state)=> state.isUserLoggedIn.isUserLoggedIn)
+  const isuserLoggedIn = useSelector((state)=> state.global.isUserLoggedIn)
   return (
     <NavigationContainer>
      {isuserLoggedIn ?  <Login/>: <StackNavigation />}

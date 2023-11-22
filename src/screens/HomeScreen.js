@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {isLoggedIn} from '../../redux/features/GlobalSlice';
+import {isLoggedIn, setProfileDetails} from '../../redux/features/GlobalSlice';
 import {THEME_COLOR, globalStyles, height, width} from '../utils/Style';
 import {
   DarkTextMedium,
@@ -22,7 +22,7 @@ import {
 } from '../components/StyledComponent';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 export default function HomeScreen({navigation}) {
-  const isGlobalBoolean = useSelector(s => s.isUserLoggedIn.isUserLoggedIn);
+  const wizobj = useSelector(s => s.global.wizardObj);
   const dispatch = useDispatch();
   const [containerHeight, setContainerHeight] = useState(0);
   const [data, setData] = useState([
@@ -50,7 +50,7 @@ export default function HomeScreen({navigation}) {
       ],
     },
     {
-      name: 'Harsh Pal',
+      name: 'Shivam',
       customer: 'Seller',
       date: '9 Nov 2013 16:00',
       car_details: [
@@ -73,7 +73,7 @@ export default function HomeScreen({navigation}) {
       ],
     },
     {
-      name: 'Harsh Pal',
+      name: 'shubham',
       customer: 'Seller',
       date: '9 Nov 2013 16:00',
       car_details: [
@@ -188,6 +188,8 @@ export default function HomeScreen({navigation}) {
       ],
     },
   ]);
+
+  // console.log("wizard =>",wizobj)
   return (
     <MainContainer>
       <FlatList
@@ -195,7 +197,7 @@ export default function HomeScreen({navigation}) {
         data={data}
         renderItem={(item) => (
           <ItemContainer
-            onPress={()=> {navigation.navigate('InspectionDetails')}}
+            onPress={()=> {navigation.navigate('Step_1',{id : 4444}),dispatch(setProfileDetails(item.item)) }}
             style={[globalStyles.rowContainer]}>
             <View style={[{width: '45%', backgroundColor: 'transparent'}]}>
               <FadeTextSmall style={[{padding: 5}]}>
