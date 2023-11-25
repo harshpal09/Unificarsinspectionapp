@@ -28,7 +28,7 @@ const WizardProgressBar = ({route}) => {
       icon: 'car-seat-cooler',
     },
     {
-      name: 'Engine',
+      name: 'Coolent',
       icon: 'engine',
     },
     {

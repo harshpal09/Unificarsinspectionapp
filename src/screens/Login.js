@@ -1,5 +1,5 @@
 import {SafeAreaView, StyleSheet, Text, View, Button, ActivityIndicator} from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -13,6 +13,8 @@ import {
   StyledTextInput,
 } from '../components/StyledComponent';
 import {THEME_COLOR, globalStyles, width} from '../utils/Style';
+import { login } from '../services/Api';
+import axios from 'axios';
 const Stack = createStackNavigator();
 
 const LoginComponent = () => {
@@ -27,27 +29,33 @@ const LoginComponent = () => {
   const [error,setError] = useState({
     email:'',
     password:'',
+    error:'',
   })
+  const [data,setData] = useState({});
   
   const handleClickEmail = (event) => {
-    event.persist();
+    // event.persist();
     const emailValue = event.nativeEvent.text;
     setEmail(emailValue);
     setError((prev) => ({ ...prev, email: '' }));
   };
   
   const handleClickPass = (event) => {
-    event.persist();
+    // event.persist();
     const passwordValue = event.nativeEvent.text;
     setPassword(passwordValue);
     setError((prev) => ({ ...prev, password: '' }));
   };
-  console.log('email =>',email);
-  console.log('Password =>',password);
-  console.log("error = ",error);
+  useEffect(()=>{
+  
+  },[])
 
+  
+
+  
 
   const onSubmit = async() =>{
+    console.log("asdfghjk")
       setToggle(true);
       if(email == '' ){  
        setError(prev => ({ ...prev, email: 'Please enter your email' })) 
@@ -59,12 +67,22 @@ const LoginComponent = () => {
         setToggle(false); 
         return;
       }
-      setTimeout(()=>{setToggle(false),dispatch(isLoggedIn(!isGlobalBoolean))},1000);
+      
+      // try{
+      //   const res = axios.post('https://crm.unificars.com/api/cjlogin',{email:email,password:password},{'Content-Type':'multipart/form-data'})
+      //   console.log('res =>', res)
+      // }catch{
 
+      // }
+      dispatch(isLoggedIn(!isGlobalBoolean))
       
       
+  
+      setToggle(false);
 
   }
+
+
   return (
     <MainContainer>
       <View

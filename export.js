@@ -15,4 +15,13 @@ export {default as Step_2} from './src/wizardscreens/Step_2'
 export {default as Step_3} from './src/wizardscreens/Step_3'
 export {default as Step_4} from './src/wizardscreens/Step_4'
 export {default as Step_5} from './src/wizardscreens/Step_5'
+export {default as CustomDropdown} from './src/components/CustomDropdown.js'
+export {default as globalStyles} from './src/utils/Style.js'
+export {default as AccordionView} from './src/components/AccordionView'
+export {default as CustomTextInput} from './src/components/CustomTextInput'
+export {default as DatePicker} from './src/components/DatePicker'
+export {default as MultiSelectDropdown} from './src/components/MultiSelectDropdown'
+
+
+
 

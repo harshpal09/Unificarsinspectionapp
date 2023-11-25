@@ -7,7 +7,7 @@ import {
   Image,
   FlatList,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {isLoggedIn, setProfileDetails} from '../../redux/features/GlobalSlice';
 import {THEME_COLOR, globalStyles, height, width} from '../utils/Style';
@@ -21,14 +21,16 @@ import {
   MainContainer,
 } from '../components/StyledComponent';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { allInspection } from '../services/Api';
 export default function HomeScreen({navigation}) {
   const wizobj = useSelector(s => s.global.wizardObj);
   const dispatch = useDispatch();
   const [containerHeight, setContainerHeight] = useState(0);
-  const [data, setData] = useState([
+  const [data, setData] = useState(
+    [
     {
       name: 'Harsh Pal',
-      customer: 'Seller',
+      type: 'Seller',
       date: '9 Nov 2013 16:00',
       car_details: [
         {
@@ -36,8 +38,8 @@ export default function HomeScreen({navigation}) {
           value: '2344/201',
         },
         {
-          key: 'Car',
-          value: 'Toyota Avanza',
+          key: 'AC',
+          value: 'Godrej',
         },
         {
           key: 'No. POl',
@@ -51,7 +53,7 @@ export default function HomeScreen({navigation}) {
     },
     {
       name: 'Shivam',
-      customer: 'Seller',
+      type: 'Seller',
       date: '9 Nov 2013 16:00',
       car_details: [
         {
@@ -59,8 +61,8 @@ export default function HomeScreen({navigation}) {
           value: '2344/201',
         },
         {
-          key: 'Car',
-          value: 'Toyota Avanza',
+          key: 'AC',
+          value: 'VOLTAS',
         },
         {
           key: 'No. POl',
@@ -74,7 +76,7 @@ export default function HomeScreen({navigation}) {
     },
     {
       name: 'shubham',
-      customer: 'Seller',
+      type: 'Seller',
       date: '9 Nov 2013 16:00',
       car_details: [
         {
@@ -82,8 +84,8 @@ export default function HomeScreen({navigation}) {
           value: '2344/201',
         },
         {
-          key: 'Car',
-          value: 'Toyota Avanza',
+          key: 'AC',
+          value: 'Blue Star',
         },
         {
           key: 'No. POl',
@@ -97,7 +99,7 @@ export default function HomeScreen({navigation}) {
     },
     {
       name: 'Harsh Pal',
-      customer: 'Seller',
+      type: 'Seller',
       date: '9 Nov 2013 16:00',
       car_details: [
         {
@@ -105,8 +107,8 @@ export default function HomeScreen({navigation}) {
           value: '2344/201',
         },
         {
-          key: 'Car',
-          value: 'Toyota Avanza',
+          key: 'AC',
+          value: 'Godrej',
         },
         {
           key: 'No. POl',
@@ -187,9 +189,29 @@ export default function HomeScreen({navigation}) {
         },
       ],
     },
-  ]);
+  ]
+  );
 
   // console.log("wizard =>",wizobj)
+
+  useEffect(()=>{
+    getData();
+  },)
+
+  const getData = async() =>{
+    try{
+      const response = await allInspection({id: 87,status:'all'});
+      if(response.data.code == 200){
+        // setData(response.data.data);
+      }
+      else{
+        
+      }
+    }
+    catch(error){
+      console.log("error ", error)
+    }
+  }
   return (
     <MainContainer>
       <FlatList

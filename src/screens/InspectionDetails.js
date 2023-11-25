@@ -184,7 +184,7 @@ export default function InspectionDetails({navigation}) {
       icon:'car-seat-cooler'
     },
     {
-      name:'Engine',
+      name:'Cooler',
       icon:'engine'
     },
     {
@@ -196,7 +196,7 @@ export default function InspectionDetails({navigation}) {
 
   const steps = ['Step 1', 'Step 2', 'Step 3', 'Step 4']; // Add your steps here
   const profileDetails = useSelector((state)=> state.global.profileDetails)
-  console.log("profile details =>",profileDetails);
+  // console.log("profile details =>",profileDetails);
   const handleNext = () => {
     setCurrentStep((prevStep) => Math.min(prevStep + 1, steps.length - 1));
   };
@@ -272,18 +272,8 @@ export default function InspectionDetails({navigation}) {
       <View style={[globalStyles.flexBox,]}>
         <WizardProgressBar navigation={navigation}  />
       </View>
-      </Container>
-      {/* <Container>
-        <FlatList 
-          style={{width:'100%'}}
-          data={item}
-          renderItem={(item)=>
-            <DetailsChild item={item.item} />
-          }
-        />
-      </Container>
-   
-      <FloatingButton style={[globalStyles.flexBox]} activeOpacity={0.93} onPress={()=> navigation.navigate('step_1') }>
+      </Container>   
+      {/* <FloatingButton style={[globalStyles.flexBox]} activeOpacity={0.93} onPress={()=> navigation.navigate('step_1') }>
         <Text style={{fontWeight:'800',fontSize:14,color:'white'}}>Start Inspection</Text>
       </FloatingButton> */}
       

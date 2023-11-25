@@ -1,14 +1,14 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import {InspectionDetails} from '../../export'
 
 export default function Step_2() {
 
   return (
-    <View>
+    <SafeAreaView>
       <InspectionDetails  />
-      <Text>step_2</Text>
-    </View>
+      {/* <Text>step_2</Text> */}
+    </SafeAreaView>
   )
 }
 

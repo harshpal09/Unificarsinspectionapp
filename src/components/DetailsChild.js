@@ -3,15 +3,14 @@ import React ,{useRef,useEffect,useState} from 'react'
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 import {SubAccordionView,AccordionView} from '../../export'
-import { THEME_COLOR,globalStyles } from '../utils/Style'
+import { LIGHT_BLUE, LIGHT_BLUE_BACKGROUND, THEME_COLOR,globalStyles } from '../utils/Style'
 import { FloatingButton } from './StyledComponent'
 
-export default function DetailsChild({item}) {
+export default  DetailsChild =React.memo(({item}) => {
   // console.log("from details child=> ",data);
-  const [toggle, setToggle] = useState(false);
   const [accordion, setAccordion] = useState(true);
   const spinValue = useRef(new Animated.Value(0)).current;
-  const [cheight,setCheight] = useState('');
+ 
 
 
   
@@ -28,7 +27,7 @@ export default function DetailsChild({item}) {
   };
   const spinAnimation = spinValue.interpolate({
     inputRange: [0, 1],
-    outputRange: toggle == true || toggle == undefined? ['0deg', '180deg']:['180deg', '0deg'], // Adjust the rotation range as needed
+    outputRange: accordion == true || accordion == undefined? ['0deg', '180deg']:['180deg', '0deg'], // Adjust the rotation range as needed
   });
 
  
@@ -36,7 +35,7 @@ export default function DetailsChild({item}) {
 
   return (
     <SafeAreaView style={[globalStyles.flexBoxJustify,{width:"100%"}]}>
-      <TouchableOpacity activeOpacity={0.7} style={[globalStyles.childDetailContainer,globalStyles.flexBoxJustify,{marginBottom:0,marginTop:10,borderBottomLeftRadius:accordion ? 0 : 10,borderBottomRightRadius:accordion ? 0 : 10,}]} onPress={()=> {spin(),setToggle(!toggle),setAccordion(!accordion)}} >
+      <TouchableOpacity activeOpacity={0.7} style={[globalStyles.childDetailContainer,globalStyles.flexBoxJustify,{marginBottom:0,marginTop:10,borderBottomLeftRadius:accordion ? 0 : 10,borderBottomRightRadius:accordion ? 0 : 10,backgroundColor:LIGHT_BLUE_BACKGROUND,}]} onPress={()=> {spin(),setAccordion(!accordion)}} >
         <View style={[globalStyles.rowContainer,{justifyContent:'space-between',}]}>
           <View style={[globalStyles.rowContainer,{padding:10}]}>
             <MaterialCommunityIcons name={item.icon} size={15} style={{marginHorizontal:5}} color={THEME_COLOR}/>
@@ -47,16 +46,10 @@ export default function DetailsChild({item}) {
           </Animated.View>
         </View>
       </TouchableOpacity>
-    
-      {/* {data.subpart.length ? 
-        <SubAccordionView content={data.subpart} expanded={accordion}  /> 
-      // <></>
-      :
-      <AccordionView  expanded={accordion} content={data.car_details} isSubAccordionView={data.subpart.length > 0} />
-      // <></>
-  } */}
+      <AccordionView  expanded={!accordion}   />
+
     </SafeAreaView>
   )
-}
+})
 
 const styles = StyleSheet.create({})

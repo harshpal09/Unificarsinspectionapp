@@ -9,6 +9,9 @@ export const {width,height} = Dimensions.get('screen')
 //Complementary color: #FF691F (orange)
 
 export const THEME_COLOR = "#1F51FF"
+export const LIGHT_BLUE = "#5481ff"
+export const LIGHT_BLUE_BACKGROUND = '#d7dffc'
+
 
 
 export const globalStyles = StyleSheet.create({
@@ -105,5 +108,12 @@ export const globalStyles = StyleSheet.create({
       },
       profileIcon: {
         color: 'grey',
+      },
+      wrapContainer: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        marginVertical: 10,
+        marginVertical: 5,
+        // backgroundColor:'yellow'
       },
 })

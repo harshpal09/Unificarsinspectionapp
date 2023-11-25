@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import { THEME_COLOR } from '../utils/Style';
+import { LIGHT_BLUE, THEME_COLOR } from '../utils/Style';
 
 // Create a styled component
 export const MainContainer = styled.SafeAreaView`
@@ -54,6 +54,26 @@ export const ProfileContainer = styled.View`
 export const FadeTextSmall = styled.Text`
   color: grey;
   font-size: 10px;
+  font-weight: 700;
+`;
+export const ThemeColorTextSmall = styled.Text`
+  color: ${THEME_COLOR};
+  font-size: 10px;
+  font-weight: 700;
+`;
+export const LightThemeColorTextSmall = styled.Text`
+  color: ${LIGHT_BLUE};
+  font-size: 10px;
+  font-weight: 700;
+`;
+export const LightThemeColorTextMedium = styled.Text`
+  color: ${LIGHT_BLUE};
+  font-size: 14px;
+  font-weight: 700;
+`;
+export const ThemeColorTextMedium = styled.Text`
+  color: ${THEME_COLOR};
+  font-size: 14px;
   font-weight: 700;
 `;
 export const FadeTextMedium = styled.Text`
