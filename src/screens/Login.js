@@ -4,7 +4,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useDispatch, useSelector} from 'react-redux';
-import {isLoggedIn} from '../../redux/features/GlobalSlice';
+import {isLoggedIn, setUserDetails} from '../../redux/features/GlobalSlice';
 import {
   DarkTextLarge,
   MainContainer,
@@ -12,13 +12,15 @@ import {
   StyledButton,
   StyledTextInput,
 } from '../components/StyledComponent';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {THEME_COLOR, globalStyles, width} from '../utils/Style';
 import { login } from '../services/Api';
 import axios from 'axios';
+
 const Stack = createStackNavigator();
 
 const LoginComponent = () => {
-  const isGlobalBoolean = useSelector(state => state.global.isUserLoggedIn);
+  const isGlobalBoolean = useSelector(state => state.global.userDetails);
   const dispatch = useDispatch();
 
   const [focusInEmail,setFocusInEmail] = useState(false)
@@ -38,6 +40,7 @@ const LoginComponent = () => {
     const emailValue = event.nativeEvent.text;
     setEmail(emailValue);
     setError((prev) => ({ ...prev, email: '' }));
+    setError(prev => ({ ...prev, error:''}));
   };
   
   const handleClickPass = (event) => {
@@ -45,6 +48,8 @@ const LoginComponent = () => {
     const passwordValue = event.nativeEvent.text;
     setPassword(passwordValue);
     setError((prev) => ({ ...prev, password: '' }));
+    setError(prev => ({ ...prev, error:''}));
+
   };
   useEffect(()=>{
   
@@ -55,33 +60,43 @@ const LoginComponent = () => {
   
 
   const onSubmit = async() =>{
-    console.log("asdfghjk")
       setToggle(true);
       if(email == '' ){  
        setError(prev => ({ ...prev, email: 'Please enter your email' })) 
+       setToggle(false); 
+       return;
       }
       if(password == ''){
         setError(prev => ({ ...prev, password: 'Please enter your Password' }))
-      }
-      if(error.email != "" || error.password != "") {
         setToggle(false); 
         return;
       }
-      
-      // try{
-      //   const res = axios.post('https://crm.unificars.com/api/cjlogin',{email:email,password:password},{'Content-Type':'multipart/form-data'})
-      //   console.log('res =>', res)
-      // }catch{
-
-      // }
-      dispatch(isLoggedIn(!isGlobalBoolean))
-      
-      
-  
+        const res =await login({email:email,password:password});
+        
+        if(res != null && res.data.data.code == 200){
+          const jsonValue = JSON.stringify(res.data.data.data);
+          try {
+            await AsyncStorage.setItem('user', JSON.stringify(jsonValue));
+            dispatch(setUserDetails(res.data.data.data));
+            dispatch(isLoggedIn(true))
+          } catch (error) {
+            console.log("error - ",error)
+            setError(prev => ({ ...prev, error:"**Something went wrong to save user data"}))
+          }
+          
+        }
+        else if(res.error != ""){
+          setError(prev => ({ ...prev, error:"**"+res.error}))
+          
+        }
+        else{
+          setError(prev => ({ ...prev, error:"**"+res.data.data.message}))
+        }
       setToggle(false);
-
   }
 
+  
+  // console.log("user deatails = >" ,isGlobalBoolean)
 
   return (
     <MainContainer>
@@ -130,6 +145,7 @@ const LoginComponent = () => {
           </Text>
           }
         </StyledButton>
+        {error.error != '' && <Text style={{fontSize:13,color:'red'}}>{error.error}</Text>}
       </ProfileContainer>
     </MainContainer>
   );

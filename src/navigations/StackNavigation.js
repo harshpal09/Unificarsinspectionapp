@@ -24,10 +24,10 @@ export default function StackNavigation() {
       <Stack.Screen name='WizardProgressBar' component={WizardProgressBar} options={{headerShown:false}} />
       <Stack.Screen  name="InspectionDetails" component={InspectionDetails} options={{headerShown:true,headerBackTitle:" ",headerTitle:'Information',headerStyle:{backgroundColor:THEME_COLOR},headerTitleStyle:{color:'white'}}} />
       <Stack.Screen name='Step_1' component={Step_1} options={{headerShown:true,headerBackTitleVisible:false,headerTitle:'Information',headerStyle:{backgroundColor:THEME_COLOR},headerTitleStyle:{color:'white'}}}/>
-      <Stack.Screen  name="Step_2" component={Step_2} options={{headerShown:true,headerBackTitleVisible:false,headerTitle:'Information',headerStyle:{backgroundColor:THEME_COLOR},headerTitleStyle:{color:'white'}}} />
+      {/* <Stack.Screen  name="Step_2" component={Step_2} options={{headerShown:true,headerBackTitleVisible:false,headerTitle:'Information',headerStyle:{backgroundColor:THEME_COLOR},headerTitleStyle:{color:'white'}}} />
       <Stack.Screen  name="Step_3" component={Step_3} options={{headerShown:true,headerBackTitleVisible:false,headerTitle:'Information',headerStyle:{backgroundColor:THEME_COLOR},headerTitleStyle:{color:'white'}}} />
       <Stack.Screen  name="Step_4" component={Step_4} options={{headerShown:true,headerBackTitleVisible:false,headerTitle:'Information',headerStyle:{backgroundColor:THEME_COLOR},headerTitleStyle:{color:'white'}}} />
-      <Stack.Screen  name="Step_5" component={Step_5} options={{ headerShown:true,headerBackTitleVisible:false,headerTitle:'Information',headerStyle:{backgroundColor:THEME_COLOR},headerTitleStyle:{color:'white'}}} />
+      <Stack.Screen  name="Step_5" component={Step_5} options={{ headerShown:true,headerBackTitleVisible:false,headerTitle:'Information',headerStyle:{backgroundColor:THEME_COLOR},headerTitleStyle:{color:'white'}}} /> */}
 
     </Stack.Navigator>
   )

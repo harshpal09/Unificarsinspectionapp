@@ -7,7 +7,7 @@ export default function Step_2() {
   return (
     <SafeAreaView>
       <InspectionDetails  />
-      {/* <Text>step_2</Text> */}
+      <Text>step_2</Text>
     </SafeAreaView>
   )
 }

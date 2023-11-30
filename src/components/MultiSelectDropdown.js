@@ -15,19 +15,19 @@ import {
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
 
-const MultiSelectDropdown = () => {
-  const options = [
-    'Apple',
-    'Banana',
-    'Cherry',
-    'Date',
-    'Grape',
-    'Lemon',
-    'fgsssdhsd',
-    'fgsdhsd',
-    'fgsddhsd',
-    'fgsdshsd',
-  ];
+const MultiSelectDropdown = ({placeholder,data}) => {
+  // const options = [
+  //   'Apple',
+  //   'Banana',
+  //   'Cherry',
+  //   'Date',
+  //   'Grape',
+  //   'Lemon',
+  //   'fgsssdhsd',
+  //   'fgsdhsd',
+  //   'fgsddhsd',
+  //   'fgsdshsd',
+  // ];
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedOptions, setSelectedOptions] = useState([]);
@@ -51,7 +51,7 @@ const MultiSelectDropdown = () => {
   };
   const deleteSelectedOptions = ind => {};
 
-  const filteredOptions = options.filter(option =>
+  const filteredOptions = data.filter(option =>
     option.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
@@ -104,7 +104,7 @@ const MultiSelectDropdown = () => {
           {justifyContent: 'space-between'},
         ]}>
         <LightThemeColorTextMedium>
-          {selectedValue || 'Select a option'}{' '}
+          {selectedValue || placeholder}{' '}
         </LightThemeColorTextMedium>
         <MaterialCommunityIcons
           name="chevron-down"

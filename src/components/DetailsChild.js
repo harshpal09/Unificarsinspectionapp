@@ -1,19 +1,48 @@
-import { SafeAreaView, StyleSheet, Text, View,Animated,Easing, TouchableOpacity } from 'react-native'
-import React ,{useRef,useEffect,useState} from 'react'
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+  Animated,
+  Easing,
+  TouchableOpacity,
+  FlatList,
+} from 'react-native';
+import React, {useRef, useEffect, useState} from 'react';
 
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
-import {SubAccordionView,AccordionView} from '../../export'
-import { LIGHT_BLUE, LIGHT_BLUE_BACKGROUND, THEME_COLOR,globalStyles } from '../utils/Style'
-import { FloatingButton } from './StyledComponent'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {SubAccordionView, AccordionView} from '../../export';
+import {
+  LIGHT_BLUE,
+  LIGHT_BLUE_BACKGROUND,
+  THEME_COLOR,
+  globalStyles,
+} from '../utils/Style';
+import {FloatingButton} from './StyledComponent';
+import SubChildAccordionView from './SubChildAccordionView';
 
-export default  DetailsChild =React.memo(({item}) => {
-  // console.log("from details child=> ",data);
+export default DetailsChild = React.memo(({data}) => {
+  if (Array.isArray(data)) {
+    return (
+      <FlatList
+        data={data}
+        renderItem={({item,index}) => (
+          <MainContainer data={item} />
+        )}
+      />
+    );
+  } else {
+    return (
+      <MainContainer data={data} />
+    );
+  }
+});
+
+
+const MainContainer = ({data}) =>{
+  console.log('from details child=> ', data);
   const [accordion, setAccordion] = useState(true);
   const spinValue = useRef(new Animated.Value(0)).current;
- 
-
-
-  
 
   const spin = () => {
     // console.log('toggle=>',toggle);
@@ -27,29 +56,88 @@ export default  DetailsChild =React.memo(({item}) => {
   };
   const spinAnimation = spinValue.interpolate({
     inputRange: [0, 1],
-    outputRange: accordion == true || accordion == undefined? ['0deg', '180deg']:['180deg', '0deg'], // Adjust the rotation range as needed
+    outputRange:
+      accordion == true || accordion == undefined
+        ? ['0deg', '180deg']
+        : ['180deg', '0deg'], // Adjust the rotation range as needed
   });
 
- 
-
-
   return (
-    <SafeAreaView style={[globalStyles.flexBoxJustify,{width:"100%"}]}>
-      <TouchableOpacity activeOpacity={0.7} style={[globalStyles.childDetailContainer,globalStyles.flexBoxJustify,{marginBottom:0,marginTop:10,borderBottomLeftRadius:accordion ? 0 : 10,borderBottomRightRadius:accordion ? 0 : 10,backgroundColor:LIGHT_BLUE_BACKGROUND,}]} onPress={()=> {spin(),setAccordion(!accordion)}} >
-        <View style={[globalStyles.rowContainer,{justifyContent:'space-between',}]}>
-          <View style={[globalStyles.rowContainer,{padding:10}]}>
-            <MaterialCommunityIcons name={item.icon} size={15} style={{marginHorizontal:5}} color={THEME_COLOR}/>
-            <Text style={{color:THEME_COLOR,fontWeight:'700'}}>{item.name}</Text>
+    <SafeAreaView style={[globalStyles.flexBoxJustify, {width: '100%'}]}>
+      <TouchableOpacity
+        activeOpacity={0.7}
+        style={[
+          globalStyles.childDetailContainer,
+          globalStyles.flexBoxJustify,
+          {
+            marginBottom: 0,
+            marginTop: 10,
+            borderBottomLeftRadius: !accordion ? 0 : 10,
+            borderBottomRightRadius: !accordion ? 0 : 10,
+            backgroundColor: LIGHT_BLUE_BACKGROUND,
+          },
+        ]}
+        onPress={() => {
+          spin(), setAccordion(!accordion);
+        }}>
+        <View
+          style={[
+            globalStyles.rowContainer,
+            {justifyContent: 'space-between'},
+          ]}>
+          <View style={[globalStyles.rowContainer, {padding: 10}]}>
+            <MaterialCommunityIcons
+              name={data != undefined ? data.icon : ''}
+              size={15}
+              style={{marginHorizontal: 5}}
+              color={THEME_COLOR}
+            />
+            <Text style={{color: THEME_COLOR, fontWeight: '700'}}>
+              {data != undefined ? data.title : ''}
+            </Text>
           </View>
-          <Animated.View style={[styles.rotatedBox, { padding:10,transform:[{ rotate: spinAnimation }]}]} >
-              <MaterialCommunityIcons name='chevron-down' size={18} style={{marginHorizontal:8,}} color={THEME_COLOR}/>
+          <Animated.View
+            style={[
+              styles.rotatedBox,
+              {padding: 10, transform: [{rotate: spinAnimation}]},
+            ]}>
+            <MaterialCommunityIcons
+              name="chevron-down"
+              size={18}
+              style={{marginHorizontal: 8}}
+              color={THEME_COLOR}
+            />
           </Animated.View>
         </View>
       </TouchableOpacity>
-      <AccordionView  expanded={!accordion}   />
-
+      {!accordion && data.subfeilds == undefined && (
+        <FlatList
+          style={[
+            globalStyles.flexBoxJustify,
+            // { width: '100%',overflow:'hidden',borderWidth:1,borderTopColor:'transparent',borderColor:'lightgrey' },
+            globalStyles.container,
+            {borderWidth: accordion ? 1 : 0},
+          ]}
+          data={data != undefined ? data.feilds : []}
+          renderItem={({item, index}) => (
+            <SubChildAccordionView
+              content={item}
+              length={data.length}
+              index={index}
+              expanded={!accordion}
+            />
+          )}
+        />
+      )}
+      {/* <SubChildAccordionView content={[]} expanded={accordion}  />  */}
+      {!Array.isArray(data) && (
+        <AccordionView
+          fields={data != undefined ? data.subfeilds : []}
+          expanded={!accordion}
+        />
+      )}
     </SafeAreaView>
-  )
-})
+  );
+}
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});

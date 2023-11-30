@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
-import { THEME_COLOR, globalStyles, width } from '../utils/Style';
+import { LIGHT_BLUE_BACKGROUND, THEME_COLOR, globalStyles, width } from '../utils/Style';
 import { FadeTextSmall } from './StyledComponent';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
@@ -41,7 +41,7 @@ const WizardProgressBar = ({route}) => {
     // Update header back button dynamically
     navigation.setOptions({
       headerLeft: () => (
-        <TouchableOpacity style={{paddingHorizontal:10}} onPress={() => navigation.replace('tab')}>
+        <TouchableOpacity style={{paddingHorizontal:10}} onPress={() => {handleStepPress(0),navigation.replace('tab')}}>
           <Ionicons name={'chevron-back'} color="white" size={25} />
         </TouchableOpacity>
       ),
@@ -52,14 +52,12 @@ const WizardProgressBar = ({route}) => {
     setCurrentStep(step);
     setIndex(step);
     let obj = { ...wizobj };
-    obj.currentStep = step;
+    obj.currentStep = item[step].name.toLowerCase();
     obj.index = step;
     dispatch(setWizardCurrentStep(obj));
-    navigation && 
-     navigation.navigate(`Step_${step + 1}`,);
     // navigation.goBack();
   };
-
+  console.log(wizobj)
   return (
     <View style={styles.container}>
       {/* Your component content */}
@@ -78,16 +76,16 @@ const WizardProgressBar = ({route}) => {
         <View key={index} style={[globalStyles.rowContainer, globalStyles.flexBox]}>
           <View style={[{ backgroundColor: 'transparent', width: 30 }, globalStyles.flexBox]}>
             <TouchableOpacity
-              style={[styles.step, stepStyle, { backgroundColor: index <= wizobj.currentStep ? THEME_COLOR : '#cfd9fa' }]}
+              style={[styles.step, stepStyle, { backgroundColor: index <=  wizobj.index? THEME_COLOR : LIGHT_BLUE_BACKGROUND }]}
               onPress={() => handleStepPress(index)}
             >
-              <Text style={[styles.stepText, { color: index <= wizobj.currentStep ? 'white' : THEME_COLOR }]}>{index + 1}</Text>
+              <Text style={[styles.stepText, { color: index <=  wizobj.index? 'white' : THEME_COLOR }]}>{index + 1}</Text>
             </TouchableOpacity>
           </View>
           <FadeTextSmall style={{ width: 60, position: 'absolute', bottom: -20, left: -12, textAlign: 'center', color: index <= wizobj.currentStep ? THEME_COLOR : 'grey' }}>
             {val.name}
           </FadeTextSmall>
-          {index !== steps - 1 ? <View style={[styles.line, { width: 40, backgroundColor: index <= wizobj.currentStep - 1 ? THEME_COLOR : '#cfd9fa' }]} /> : <></>}
+          {index !== steps - 1 ? <View style={[styles.line, { width: 40, backgroundColor: index <= wizobj.index - 1 ? THEME_COLOR : '#cfd9fa' }]} /> : <></>}
         </View>
       );
     });

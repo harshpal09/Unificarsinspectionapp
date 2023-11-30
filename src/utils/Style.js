@@ -32,6 +32,23 @@ export const globalStyles = StyleSheet.create({
         justifyContent: 'center',
         // alignItems: 'center',
       },
+      childDetailContainer: {
+        backgroundColor: LIGHT_BLUE,
+        width: '100%',
+        height: 40,
+        borderRadius: 10,
+      },
+      container: {
+        width: '100%',
+        borderColor: '#ccc',
+        // margin: 10,
+        // marginTop: -5,
+        borderRadius: 5,
+        borderTopRightRadius: 0,
+        borderTopLeftRadius: 0,
+        borderTopWidth: 0,
+        overflow: 'hidden',
+      },
     
       mainContainer: {
         // flex:1,
