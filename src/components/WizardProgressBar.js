@@ -28,11 +28,11 @@ const WizardProgressBar = ({route}) => {
       icon: 'car-seat-cooler',
     },
     {
-      name: 'Coolent',
+      name: 'Engine',
       icon: 'engine',
     },
     {
-      name: 'Other',
+      name: 'Final',
       icon: 'car-cog',
     },
   ]);
@@ -47,7 +47,7 @@ const WizardProgressBar = ({route}) => {
       ),
     });
   }, [currentStep, wizobj]);
-
+  // console.log("success step =>",wizobj.index)
   const handleStepPress = (step) => {
     setCurrentStep(step);
     setIndex(step);
@@ -57,14 +57,14 @@ const WizardProgressBar = ({route}) => {
     dispatch(setWizardCurrentStep(obj));
     // navigation.goBack();
   };
-  console.log(wizobj)
+  // console.log(wizobj)
   return (
     <View style={styles.container}>
       {/* Your component content */}
       <View style={styles.stepsContainer}>{renderSteps()}</View>
     </View>
   );
-
+    
   function renderSteps() {
     const steps = 5; // Number of steps
 
@@ -76,16 +76,16 @@ const WizardProgressBar = ({route}) => {
         <View key={index} style={[globalStyles.rowContainer, globalStyles.flexBox]}>
           <View style={[{ backgroundColor: 'transparent', width: 30 }, globalStyles.flexBox]}>
             <TouchableOpacity
-              style={[styles.step, stepStyle, { backgroundColor: index <=  wizobj.index? THEME_COLOR : LIGHT_BLUE_BACKGROUND }]}
+              style={[styles.step, stepStyle, { backgroundColor: index <=  wizobj.index  ? wizobj.successStep >= wizobj.index ?"#22b527" : THEME_COLOR : LIGHT_BLUE_BACKGROUND }]}
               onPress={() => handleStepPress(index)}
             >
-              <Text style={[styles.stepText, { color: index <=  wizobj.index? 'white' : THEME_COLOR }]}>{index + 1}</Text>
+              <Text style={[styles.stepText, { color: index <=  wizobj.index ? 'white' : THEME_COLOR }]}>{index + 1}</Text>
             </TouchableOpacity>
           </View>
-          <FadeTextSmall style={{ width: 60, position: 'absolute', bottom: -20, left: -12, textAlign: 'center', color: index <= wizobj.currentStep ? THEME_COLOR : 'grey' }}>
+          <FadeTextSmall style={{ width: 60, position: 'absolute', bottom: -20, left: -12, textAlign: 'center', color: index <= wizobj.index ? wizobj.success[wizobj.currentStep] ? "#22b527" : THEME_COLOR : 'grey' }}>
             {val.name}
           </FadeTextSmall>
-          {index !== steps - 1 ? <View style={[styles.line, { width: 40, backgroundColor: index <= wizobj.index - 1 ? THEME_COLOR : '#cfd9fa' }]} /> : <></>}
+          {index !== steps - 1 ? <View style={[styles.line, { width: 40, backgroundColor: index <= wizobj.index - 1 ? wizobj.success[wizobj.currentStep] ? "#22b527" : THEME_COLOR : LIGHT_BLUE_BACKGROUND }]} /> : <></>}
         </View>
       );
     });

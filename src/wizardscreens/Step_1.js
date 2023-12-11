@@ -1,60 +1,32 @@
+import React, { useEffect, useState } from 'react';
 import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
   SafeAreaView,
   FlatList,
+  ActivityIndicator,
+  StyleSheet,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {InspectionDetails, CustomDropdown} from '../../export';
-import {globalStyles, width} from '../utils/Style';
-import MultiSelectDropdown from '../components/MultiSelectDropdown';
-import {Container, MainContainer} from '../components/StyledComponent';
-import CustomTextInput from '../components/CustomTextInput';
-import DatePicker from '../components/DatePicker';
-import DetailsChild from '../components/DetailsChild';
-import {ScrollView} from 'react-native-gesture-handler';
+import { InspectionDetails, DetailsChild } from '../../export';
+import { globalStyles } from '../utils/Style';
 import { documentsForm } from '../services/Api';
 import { useSelector } from 'react-redux';
 
 export default function Step_1() {
   const wizobj = useSelector((state) => state.global.wizardObj);
-  const [item, setItem] = useState([
-    {
-      name: 'Documents',
-      icon: 'file',
-    },
-    {
-      name: 'Exterior',
-      icon: 'car-lifted-pickup',
-    },
-    {
-      name: 'Interior',
-      icon: 'car-seat-cooler',
-    },
-    {
-      name: 'Engine',
-      icon: 'engine',
-    },
-    {
-      name: 'Other',
-      icon: 'car-cog',
-    },
-  ]);
-  const [data,setData] = useState([]);
-  const [loading,setLoading] = useState(true)
-  console.log("wij =>",wizobj)
+  const profileDetails = useSelector(state => state.global.profileDetails);
 
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  
   useEffect(() => {
     getData();
   }, []);
+
   const getData = async () => {
     try {
       setLoading(true);
-      const response = await documentsForm({leadId:21});
+      const response = await documentsForm({ leadId: profileDetails.id });
       if (response.data.data.code != undefined && response.data.data.code) {
-        // console.log('data =>', response.data.data.data);
+        // console.log('datadfghjhgfdfghjhfdfghjhgfdfghj =>', response.data.data.data);
         setData(response.data.data.data);
       } else {
       }
@@ -64,19 +36,32 @@ export default function Step_1() {
       setLoading(false);
     }
   };
-  return (
-    <SafeAreaView style={{flex: 1}}>
 
-      <FlatList
-        style={{paddingHorizontal: 10, paddingBottom: 20}}
-        ListHeaderComponent={() => <InspectionDetails />}
-        data={data}
-        renderItem={({ item }) => (
-            <DetailsChild data={item[wizobj.currentStep]} />
-        )}        
-        keyExtractor={(item, index) => index.toString()}
-      />
-      
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
+      {loading ? (
+        <ActivityIndicator style={styles.loadingIndicator} size="large" color="#0000ff" />
+      ) : (
+        <FlatList
+          style={{ paddingHorizontal: 10, paddingBottom: 20 }}
+          ListHeaderComponent={() => <InspectionDetails />}
+          data={data}
+          renderItem={({ item,index }) =>
+           <DetailsChild mainIndex={index} data={item[wizobj.currentStep]} />
+            // console.log("2345678 ",item)
+          }
+
+          keyExtractor={(item, index) => index.toString()}
+        />
+      )}
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  loadingIndicator: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});

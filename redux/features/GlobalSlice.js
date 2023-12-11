@@ -6,7 +6,15 @@ const initialState = {
   isUserLoggedIn: false,
   wizardObj: {
     currentStep: 'documents',
-    index:0
+    index:0,
+    success:{
+      documents:false,
+      exterior:false,
+      interior:false,
+      engine:false,
+      other:false,
+    },
+    successStep:-1,
   },
   profileDetails:{
 

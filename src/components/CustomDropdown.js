@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { View, Text, TouchableOpacity, TextInput, FlatList, StyleSheet } from 'react-native';
 import { THEME_COLOR, globalStyles, width } from '../utils/Style';
 import { LightThemeColorTextMedium, ThemeColorTextMedium } from './StyledComponent';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const CustomDropdown = ({placeholder,data}) => {
+const CustomDropdown = ({fields,onInputChange}) => {
+
+
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedValue, setSelectedValue] = useState(null);
+  const [selectedValue, setSelectedValue] = useState(fields.value);
   const [searchQuery, setSearchQuery] = useState('');
   
   const options = ['Select a option','Option 1', 'Option 2', 'Option 3', 'Another Option', 'One More Option'];
@@ -15,7 +17,13 @@ const CustomDropdown = ({placeholder,data}) => {
     setIsOpen(!isOpen);
   };
 
+  useEffect(() => {
+    handleSelect(fields.value)
+  }, [])
+
   const handleSelect = (value) => {
+    // console.log("text =",value)
+    onInputChange(value,fields);
     setSelectedValue(value);
     setIsOpen(false);
   };
@@ -24,20 +32,20 @@ const CustomDropdown = ({placeholder,data}) => {
     setSearchQuery(query);
   };
 
-  const filteredOptions = data.filter((option,i) =>
+  const filteredOptions = fields.elements.filter((option,i) =>
     option.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
     <View style={[styles.container,globalStyles.flexBox]}>
-      <TouchableOpacity onPress={toggleDropdown} style={[styles.header,globalStyles.rowContainer,{justifyContent:'space-between'}]}>
-        <LightThemeColorTextMedium>{selectedValue || placeholder} </LightThemeColorTextMedium> 
-        <MaterialCommunityIcons name='chevron-down'color={THEME_COLOR} size={20} />
+      <TouchableOpacity onPress={toggleDropdown} style={[styles.header,globalStyles.rowContainer,{justifyContent:'space-between',borderColor:selectedValue == "" ? 'red':THEME_COLOR}]}>
+        <LightThemeColorTextMedium style={{color:selectedValue == "" ? 'red':THEME_COLOR}}>{selectedValue || fields.value  || fields.placeholder} </LightThemeColorTextMedium> 
+        <MaterialCommunityIcons name='chevron-down'color={selectedValue == "" ? 'red':THEME_COLOR} size={20} />
       </TouchableOpacity>
       {isOpen && (
         <View style={styles.dropdown}>
           <TextInput
-            placeholder={"Search " + placeholder}
+            placeholder={"Search " + fields.placeholder}
             style={styles.searchInput}
             onChangeText={handleSearch}
           />
@@ -72,7 +80,7 @@ const styles = StyleSheet.create({
     width:'90%',
     padding: 10,
     borderWidth: 1,
-    borderColor: THEME_COLOR,
+    borderColor:  THEME_COLOR,
     borderRadius: 5,
   },
   dropdown: {

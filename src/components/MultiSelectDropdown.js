@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import {
   View,
   Text,
@@ -15,27 +15,21 @@ import {
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
 
-const MultiSelectDropdown = ({placeholder,data}) => {
-  // const options = [
-  //   'Apple',
-  //   'Banana',
-  //   'Cherry',
-  //   'Date',
-  //   'Grape',
-  //   'Lemon',
-  //   'fgsssdhsd',
-  //   'fgsdhsd',
-  //   'fgsddhsd',
-  //   'fgsdshsd',
-  // ];
+const MultiSelectDropdown = ({fields,onInputChange}) => {
+
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedOptions, setSelectedOptions] = useState([]);
+  const [selectedOptions, setSelectedOptions] = useState(fields.value != ""  ? fields.value.split(", ") :[]);
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedValue, setSelectedValue] = useState(null);
+  const [selectedValue, setSelectedValue] = useState('');
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
+
+  useEffect(() => {
+    // Notify the parent component when the selection changes
+    onInputChange(selectedOptions.join(', '), fields);
+  }, [selectedOptions]);
 
   const handleSelect = item => {
     // Check if the item is already selected
@@ -47,11 +41,13 @@ const MultiSelectDropdown = ({placeholder,data}) => {
     } else {
       // If not selected, add it to the selectedOptions
       setSelectedOptions(prevSelected => [...prevSelected, item]);
+      
     }
-  };
-  const deleteSelectedOptions = ind => {};
 
-  const filteredOptions = data.filter(option =>
+  };
+  
+  // console.log("selected options =>",selectedOptions.length)
+  const filteredOptions = fields.elements.filter(option =>
     option.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
@@ -101,14 +97,14 @@ const MultiSelectDropdown = ({placeholder,data}) => {
         style={[
           styles.header,
           globalStyles.rowContainer,
-          {justifyContent: 'space-between'},
+          {justifyContent: 'space-between',borderColor:selectedOptions.length == 0 ? 'red':THEME_COLOR},
         ]}>
-        <LightThemeColorTextMedium>
-          {selectedValue || placeholder}{' '}
+        <LightThemeColorTextMedium style={{color:selectedOptions.length == 0 ? 'red':THEME_COLOR}} >
+          {selectedValue || fields.value ||fields.placeholder}{' '}
         </LightThemeColorTextMedium>
         <MaterialCommunityIcons
           name="chevron-down"
-          color={THEME_COLOR}
+          color={selectedOptions.length == 0 ? 'red':THEME_COLOR}
           size={20}
         />
       </TouchableOpacity>
@@ -131,7 +127,7 @@ const MultiSelectDropdown = ({placeholder,data}) => {
                     styles.option,
                     selectedOptions.includes(item) && styles.selectedOption,
                   ]}
-                  onPress={() => handleSelect(item)}>
+                  onPress={() => {handleSelect(item)}}>
                   <Text>{item}</Text>
                 </TouchableOpacity>
               )}
@@ -154,7 +150,6 @@ const styles = StyleSheet.create({
     width: '90%',
     padding: 10,
     borderWidth: 1,
-    borderColor: THEME_COLOR,
     borderRadius: 5,
     marginTop: 20,
   },

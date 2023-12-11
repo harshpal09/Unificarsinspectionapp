@@ -1,4 +1,4 @@
-import {SafeAreaView, StyleSheet, Text, View, Button, ActivityIndicator} from 'react-native';
+import {SafeAreaView, StyleSheet, Text, View, Button, ActivityIndicator, Image} from 'react-native';
 import React, { useEffect, useState } from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 
@@ -108,6 +108,9 @@ const LoginComponent = () => {
           borderBottomLeftRadius: (width + 270) / 2,
           borderBottomRightRadius: (width + 270) / 2,
         }}></View>
+      <View style={{width:'50%',position:'absolute'}}>
+        <Image source={require('../assets/images/unifi_white_logo_copy-removebg-preview.png')} style={{width:'100%',height:150}} />
+      </View>
       <ProfileContainer
         style={[{marginTop: -200, width: '85%'}, globalStyles.flexBox]}>
         <DarkTextLarge
@@ -135,7 +138,8 @@ const LoginComponent = () => {
          onFocus={()=>setFocusInPass(true)}
          onBlur={()=>setFocusInPass(false)}
          onChange={handleClickPass}
-
+          secureTextEntry={true}
+          autoCorrect={false}
         />
         {error.password != '' && <Text style={{fontSize:13,color:'red'}}>{error.password}</Text>}
         <StyledButton style={[globalStyles.flexBox]} onPress={onSubmit}>

@@ -5,12 +5,12 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { globalStyles } from '../utils/Style';
 import AccordionView from './AccordionView';
 
-export default function SubChildAccordionView({ content, length, index }) {
+export default function SubChildAccordionView({mainIndex, content, length, index }) {
     const [toggle, setToggle] = useState(false);
     const [accordion, setAccordion] = useState(true);
     const spinValue = useRef(new Animated.Value(0)).current;
 
-    console.log("subchild =",content);
+    // console.log("subchild =",content);
 
     const spin = () => {
         // console.log('toggle=>', toggle);
@@ -24,8 +24,11 @@ export default function SubChildAccordionView({ content, length, index }) {
     };
     const spinAnimation = spinValue.interpolate({
         inputRange: [0, 1],
-        outputRange: toggle == true || toggle == undefined ? ['0deg', '180deg'] : ['180deg', '0deg'], // Adjust the rotation range as needed
+        outputRange: !accordion == true || accordion == undefined ? ['0deg', '180deg'] : ['180deg', '0deg'], // Adjust the rotation range as needed
     });
+    const handleAccordion = (val) => {
+        setAccordion(val)
+    }
     return (
         <View
             style={[
@@ -50,9 +53,8 @@ export default function SubChildAccordionView({ content, length, index }) {
                     },
                 ]}
                 onPress={() => {
-                    // console.log('on press toggle =>', toggle),
+                    // console.log('on press toggle =>', toggle,"on press accordian",accordion),
                     spin()
-                    setToggle(!toggle)
                     setAccordion(!accordion);
                 }}>
                 <View
@@ -80,7 +82,12 @@ export default function SubChildAccordionView({ content, length, index }) {
                 </View>
             </TouchableOpacity>
 
-            <AccordionView 
+            <AccordionView
+              mainIndex={mainIndex}
+              fieldIndex={index}
+              handleAccordion={handleAccordion} 
+              isSubChild={true}
+              title={content.name}
               fields={content.subfeilds != undefined ? content.subfeilds:[]}  
               expanded={accordion}   
             />

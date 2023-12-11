@@ -23,6 +23,34 @@ export  const login = async({email,password}) => {
     }
   
 }
+export  const submitForm = async({data}) => {
+  console.log("==========================================================")
+  console.log("api data =>",data)
+  console.log("==========================================================")
+
+
+  let response ={
+      error:'',
+      data:{},
+  };
+  try{
+       response.data = await axios.post(
+        'https://crm.unificars.com/api/submitbyinspection',
+        data
+        );
+      
+
+        return response;
+  }
+  catch(error){
+    console.log("==========================================================")
+    console.log("error =>",error)
+    console.log("==========================================================")
+      response.error = error
+      return response;
+  }
+
+}
 
 export  const allInspection = async({id ,status}) => {
 // console.log("agya")

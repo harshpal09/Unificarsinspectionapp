@@ -20,29 +20,39 @@ import {
 } from '../utils/Style';
 import {FloatingButton} from './StyledComponent';
 import SubChildAccordionView from './SubChildAccordionView';
+import { useSelector } from 'react-redux';
 
-export default DetailsChild = React.memo(({data}) => {
+export default DetailsChild = React.memo(({data,mainIndex}) => {
+
+
+
   if (Array.isArray(data)) {
     return (
       <FlatList
         data={data}
         renderItem={({item,index}) => (
-          <MainContainer data={item} />
+          <MainContainer mainIndex={index}  data={item} />
         )}
       />
     );
   } else {
     return (
-      <MainContainer data={data} />
+      <MainContainer mainIndex={null} data={data} />
     );
   }
 });
 
 
-const MainContainer = ({data}) =>{
-  console.log('from details child=> ', data);
+const MainContainer = ({mainIndex,data}) =>{
+  // console.log('from details child=> ', data);  
+  const wizobj = useSelector((state) => state.global.wizardObj);
+
   const [accordion, setAccordion] = useState(true);
   const spinValue = useRef(new Animated.Value(0)).current;
+  useEffect(()=>{
+    setAccordion(true);
+  },[wizobj.currentStep])
+
 
   const spin = () => {
     // console.log('toggle=>',toggle);
@@ -61,6 +71,7 @@ const MainContainer = ({data}) =>{
         ? ['0deg', '180deg']
         : ['180deg', '0deg'], // Adjust the rotation range as needed
   });
+  // console.log('accodian => ', !accordion);
 
   return (
     <SafeAreaView style={[globalStyles.flexBoxJustify, {width: '100%'}]}>
@@ -110,19 +121,19 @@ const MainContainer = ({data}) =>{
           </Animated.View>
         </View>
       </TouchableOpacity>
-      {!accordion && data.subfeilds == undefined && (
+      {!accordion && data.subfeilds == undefined  && (
         <FlatList
           style={[
             globalStyles.flexBoxJustify,
-            // { width: '100%',overflow:'hidden',borderWidth:1,borderTopColor:'transparent',borderColor:'lightgrey' },
             globalStyles.container,
             {borderWidth: accordion ? 1 : 0},
           ]}
-          data={data != undefined ? data.feilds : []}
+          data={data.feilds}
           renderItem={({item, index}) => (
             <SubChildAccordionView
               content={item}
               length={data.length}
+              mainIndex={mainIndex}
               index={index}
               expanded={!accordion}
             />
@@ -130,8 +141,10 @@ const MainContainer = ({data}) =>{
         />
       )}
       {/* <SubChildAccordionView content={[]} expanded={accordion}  />  */}
-      {!Array.isArray(data) && (
+      { !accordion && data.subfeilds !=undefined && !Array.isArray(data) && (
         <AccordionView
+          isSubChild={false}
+          title={data.title}
           fields={data != undefined ? data.subfeilds : []}
           expanded={!accordion}
         />
