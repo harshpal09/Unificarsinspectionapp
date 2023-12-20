@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {
   View,
   Text,
@@ -13,10 +13,10 @@ import {
   useCameraPermission,
   useCameraDevice,
 } from 'react-native-vision-camera';
-import {globalStyles, height, width} from '../utils/Style';
+import {THEME_COLOR, globalStyles, height, width} from '../utils/Style';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const CameraComponent = ({onPhotoCapture,photoArray,fields}) => {
+const CameraComponent = ({onPhotoCapture, photoArray, deletePhoto,fields}) => {
   const {hasPermission, requestPermission} = useCameraPermission();
 
   const cameraRef = useRef(null);
@@ -24,26 +24,71 @@ const CameraComponent = ({onPhotoCapture,photoArray,fields}) => {
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [capturedPhotos, setCapturedPhotos] = useState([]);
   const [Photos, setPhotos] = useState([]);
-
-  const [isRareCamera, setIsRareCamera] = useState(true);
+  const [showCapturedPhotos, setShowCapturedPhotos] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [isRareCamera, setIsRareCamera] = useState(true);
+
+
+  const requestCameraAndMicrophonePermission = async () => {
+    const microphonePermission = Platform.select({
+      ios: PERMISSIONS.IOS.MICROPHONE,
+      android: PERMISSIONS.ANDROID.RECORD_AUDIO,
+    });
+  
+    const cameraPermission = Platform.select({
+      ios: PERMISSIONS.IOS.CAMERA,
+      android: PERMISSIONS.ANDROID.CAMERA,
+    });
+  
+    try {
+      // Request microphone permission
+      const microphonePermissionStatus = await check(microphonePermission);
+      if (microphonePermissionStatus !== RESULTS.GRANTED) {
+        const microphoneResult = await request(microphonePermission);
+        if (microphoneResult !== RESULTS.GRANTED) {
+          console.log('Microphone permission denied');
+          // Handle denial as needed
+          return;
+        }
+      }
+  
+      // Request camera permission
+      const cameraPermissionStatus = await check(cameraPermission);
+      if (cameraPermissionStatus !== RESULTS.GRANTED) {
+        const cameraResult = await request(cameraPermission);
+        if (cameraResult !== RESULTS.GRANTED) {
+          console.log('Camera permission denied');
+          // Handle denial as needed
+          return;
+        }
+      }
+  
+      console.log('Microphone and camera permissions granted');
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+  
+  useEffect(()=>{
+    if(fields.value.length > 0){
+      photoArray("",fields)
+    }
+    requestCameraAndMicrophonePermission
+  },[])
 
   const device = useCameraDevice(isRareCamera ? 'back' : 'front');
-
-
 
   if (!hasPermission) {
     return (
       <View style={styles.container}>
         <Text>Camera permission is required</Text>
-        <TouchableOpacity onPress={requestPermission}>
-          <Text>Request Permission</Text>
+        <TouchableOpacity style={[{backgroundColor:THEME_COLOR,color:'white' ,width:'100%',borderRadius:10,padding:10},globalStyles.flexBox]} onPress={requestCameraAndMicrophonePermission}>
+          <Text style={{color:'white'}}>Request Permission</Text>
         </TouchableOpacity>
       </View>
     );
   }
   // console.log("photo clicked => ",capturedPhotos[0]);
-
   if (!device) {
     return (
       <View style={styles.container}>
@@ -62,36 +107,67 @@ const CameraComponent = ({onPhotoCapture,photoArray,fields}) => {
     setSelectedImage(null); // Reset selected image when closing the camera
   };
 
+ 
+  
+
   const handleCapturePhoto = async () => {
+    // console.log("aa raha ahai");
     try {
       const photo = await cameraRef.current.takePhoto();
       setCapturedPhotos(prevPhotos => [...prevPhotos, photo]);
-      // Callback to parent component with the captured photo
-      // setPhotos(prevPhotos => [...prevPhotos, photo]);
-      const formData = new FormData();
-      formData.append('photo', {
-        uri: photo.path,
-        type: 'image/jpeg',
-        name: 'photo.jpg',
-      });
-      // console.log("formn dta ",formData._parts[0][1])
-      photoArray(formData._parts[0][1]);
-
+      // console.log("aa raha ahai 2");
+      setShowCapturedPhotos(true);
+      let base64 = await imageToBase64(photo.path);
+    
+      photoArray(base64,fields);
       onPhotoCapture && onPhotoCapture(photo);
     } catch (error) {
       console.error('Error capturing photo:', error);
     }
   };
+  // console.log("===========================================")
 
-  const handleImageClick = (index) => {
+  // console.log("capture photos => ",capturedPhotos,"fields key =>",fields.placeholder ," value fields => ",fields.value);
+  // console.log("===========================================")
+
+  const handleImageClick = index => {
     // console.log("photo click => ",photo);
-    setSelectedImage(capturedPhotos[index]);
+    if(capturedPhotos.length > 0){
+      setSelectedImage(capturedPhotos[index]);
+    }
+    else{
+      console.log("fields value => ",fields.value[index])
+      setSelectedImage(fields.value[index]);
+    }
+
   };
 
-  
+  // Function to convert image to Base64
+  const imageToBase64 = async imagePath => {
+    try {
+      // Fetch the image file using the 'file://' URI scheme
+      const response = await fetch(`file://${imagePath}`);
+      const blob = await response.blob();
 
+      // Convert the blob to Base64
+      const base64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onerror = reject;
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.readAsDataURL(blob);
+      });
 
+      // Log or use the Base64 string as needed
+      // console.log('Base64:', base64);
 
+      return base64;
+    } catch (error) {
+      console.error('Error converting image to Base64:', error);
+      throw error;
+    }
+  };
+
+  // Example usage
 
   return (
     <View style={[styles.container]}>
@@ -102,31 +178,68 @@ const CameraComponent = ({onPhotoCapture,photoArray,fields}) => {
           globalStyles.flexBoxAlign,
         ]}
         onPress={handleOpenCamera}>
-        <Text style={styles.openCameraButtonText}>Click Images</Text>
+        <Text style={styles.openCameraButtonText}>Click {fields.placeholder}</Text>
         <MaterialCommunityIcons
           name={'image-multiple'}
           color="white"
           size={25}
         />
       </TouchableOpacity>
-      {capturedPhotos.length > 0 && 
-          <View style={{marginTop:10,width:'90%'}}>
-            <FlatList 
-              data={capturedPhotos}
-              horizontal
-              renderItem={({item,index})=>
-              <TouchableOpacity onPress={()=>handleImageClick(capturedPhotos.length - 1)}>
-               <Image source={{uri:`file://${item.path}`}} style={{width: 100, height: 100,marginHorizontal:2}} key={index} />
-              </TouchableOpacity>
+      {((capturedPhotos.length > 0 && showCapturedPhotos) ||
+        (fields.value.length > 0 && !showCapturedPhotos)) && (
+        <View style={{ marginTop: 10, width: '90%' }}>
+          <FlatList
+            data={
+              showCapturedPhotos
+                ? capturedPhotos
+                : fields.value.length > 0
+                ? fields.value
+                : []
             }
-            />
-          </View>
-      }
+            horizontal
+            renderItem={({ item, index }) => (
+              <TouchableOpacity onPress={() => handleImageClick(index)}>
+                <Image
+                  source={{
+                    uri: showCapturedPhotos
+                      ? `file://${item.path}`
+                      : item,
+                  }}
+                  style={{ width: 100, height: 100, marginHorizontal: 2 }}
+                  key={index}
+                />
+                <TouchableOpacity
+                  onPress={async() => {
+                    let base64 = await imageToBase64(item.path);
+                    deletePhoto(base64,fields);
+                    let arr = capturedPhotos.filter((_, ind) => ind !== index);
+                    setCapturedPhotos(arr);
+                    if (capturedPhotos.length == 1) {
+                      setSelectedImage(null);
+                    }
+                  }}
+                  style={{
+                    position: 'absolute',
+                    right: 5,
+                    top: 5,
+                    backgroundColor: 'white',
+                  }}>
+                  <MaterialCommunityIcons
+                    name={'trash-can'}
+                    size={20}
+                    color="red"
+                  />
+                </TouchableOpacity>
+              </TouchableOpacity>
+            )}
+          />
+        </View>
+      )}
 
       <Modal
         animationType="slide"
         transparent={false}
-        visible={selectedImage == null ? isCameraOpen : false}>
+        visible={isCameraOpen}>
         <View style={styles.modalContainer}>
           <Camera
             style={styles.camera}
@@ -170,7 +283,7 @@ const CameraComponent = ({onPhotoCapture,photoArray,fields}) => {
                 {capturedPhotos.length > 0 ? (
                   <TouchableOpacity
                     // key={index}
-                    onPress={() => handleImageClick(capturedPhotos.length - 1)}>
+                    onPress={() => {setIsCameraOpen(false), handleImageClick(capturedPhotos.length - 1)}}>
                     <Image
                       source={{
                         uri: `file://${
@@ -219,14 +332,20 @@ const CameraComponent = ({onPhotoCapture,photoArray,fields}) => {
           transparent={false}
           visible={selectedImage != null}>
           <FlatList
-            data={capturedPhotos.reverse()}
+            data={showCapturedPhotos
+              ? capturedPhotos
+              : fields.value.length > 0
+              ? fields.value
+              : []}
             horizontal
             pagingEnabled
             renderItem={({item, index}) => (
               <View style={styles.modalContainer}>
                 {/* {console.log("asdfghjkl =",item.path)} */}
                 <Image
-                  source={{uri: `file://${item.path}`}}
+                  source={{uri: showCapturedPhotos
+                    ? `file://${item.path}`
+                    : item,}}
                   style={{width: width, height: height}}
                   resizeMode="contain"
                 />
@@ -241,7 +360,9 @@ const CameraComponent = ({onPhotoCapture,photoArray,fields}) => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.deleteImageButton}
-                  onPress={() => {
+                  onPress={async() => {
+                    let base64 = await imageToBase64(item.path);
+                    deletePhoto(base64,fields);
                     let arr = capturedPhotos.filter((_, ind) => ind !== index);
                     setCapturedPhotos(arr);
                     if (capturedPhotos.length == 1) {
@@ -269,6 +390,7 @@ const styles = StyleSheet.create({
     flex: 1,
     // justifyContent: 'center',
     alignItems: 'center',
+    marginVertical:3
   },
   openCameraButton: {
     width: '90%',

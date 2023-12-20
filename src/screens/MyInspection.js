@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {isLoggedIn, setProfileDetails} from '../../redux/features/GlobalSlice';
+import {isLoggedIn, setBadges, setProfileDetails} from '../../redux/features/GlobalSlice';
 import {THEME_COLOR, globalStyles, height, width} from '../utils/Style';
 import {
   DarkTextMedium,
@@ -25,7 +25,7 @@ import {
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {allInspection} from '../services/Api';
 export default function MyInspection({navigation}) {
-  const wizobj = useSelector(s => s.global.wizardObj);
+  const badges = useSelector(s => s.global.badges);
   const dispatch = useDispatch();
   const [containerHeight, setContainerHeight] = useState(0);
   const [data, setData] = useState([]);
@@ -47,6 +47,10 @@ export default function MyInspection({navigation}) {
 
       if (response.data.data.code != undefined && response.data.data.code) {
         // console.log("data =>", response.data.data.data);
+        // let obj = {...badges};
+        // obj. = response.data.data.data.length;
+
+        // dispatch(setBadges(obj))
         setData(response.data.data.data);
       } else {
       }
@@ -109,6 +113,105 @@ export default function MyInspection({navigation}) {
                       <FadeTextMedium>Customer</FadeTextMedium>
                     </View>
                   </View>
+                  <View
+                  style={[
+                    {width: '100%', backgroundColor: 'transparent', flex: 1},
+                    globalStyles.flexBox,
+                  ]}>
+                  <View
+                    style={[
+                      {
+                        width: '100%',
+                        backgroundColor: 'transparent',
+                        padding: 5,
+                      },
+                      globalStyles.rowContainer,
+                      globalStyles.flexBoxAlign,
+                    ]}>
+                    <DarkTextSmall style={{padding: 5, width: '50%'}}>
+                      Status ?
+                    </DarkTextSmall>
+                    <View
+                      style={[
+                        {
+                          width: '50%',
+                          backgroundColor: 'transparent',
+                          justifyContent: 'space-around',
+                          borderWidth: 1,
+                          borderColor:
+                            item.item.status == 1 ? 'green' : '#d9a107',
+                          padding: 2,
+                          borderRadius: 10,
+                        },
+                        globalStyles.rowContainer,
+                        globalStyles.flexBoxAlign,
+                      ]}>
+                      <MaterialCommunityIcons
+                        name={
+                          item.item.status == 1
+                            ? 'check-circle'
+                            : 'alert-circle'
+                        }
+                        size={10}
+                        color={item.item.status == 1 ? 'green' : '#d9a107'}
+                      />
+                      <DarkTextSmall
+                        style={{
+                          color: item.item.status == 1 ? 'green' : '#d9a107',
+                        }}>
+                        {item.item.status == 1 ? 'Completed' : 'Pending'}
+                      </DarkTextSmall>
+                    </View>
+                  </View>
+                  <View
+                    style={[
+                      {
+                        width: '100%',
+                        backgroundColor: 'transparent',
+                        padding: 5,
+                      },
+                      globalStyles.rowContainer,
+                      globalStyles.flexBoxAlign,
+                    ]}>
+                    <DarkTextSmall style={{padding: 5, width: '50%'}}>
+                      Report Status ?
+                    </DarkTextSmall>
+                    <View
+                      style={[
+                        {
+                          width: '50%',
+                          backgroundColor: 'transparent',
+                          justifyContent: 'space-around',
+                          borderWidth: 1,
+                          borderColor:
+                            item.item.approvstatus == 1 ? 'green' : '#d9a107',
+                          padding: 2,
+                          borderRadius: 10,
+                        },
+                        globalStyles.rowContainer,
+                        globalStyles.flexBoxAlign,
+                      ]}>
+                      <MaterialCommunityIcons
+                        name={
+                          item.item.approvstatus == 1
+                            ? 'check-circle'
+                            : 'alert-circle'
+                        }
+                        size={10}
+                        color={
+                          item.item.approvstatus == 1 ? 'green' : '#d9a107'
+                        }
+                      />
+                      <DarkTextSmall
+                        style={{
+                          color:
+                            item.item.approvstatus == 1 ? 'green' : '#d9a107',
+                        }}>
+                        {item.item.approvstatus == 1 ? 'Approved' : 'No Action'}
+                      </DarkTextSmall>
+                    </View>
+                  </View>
+                </View>
                 </View>
                 <View style={[{width: '45%', backgroundColor: 'transparent'}]}>
                   <DarkTextSmall style={[{padding: 5}]}>

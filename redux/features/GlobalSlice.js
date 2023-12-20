@@ -22,6 +22,12 @@ const initialState = {
   userDetails:{
 
   },
+  badges:{
+    today:0,
+    completed:0,
+    all:0,
+    miss:0,
+  }
 };
 
 export const GlobalSlice = createSlice({
@@ -40,10 +46,17 @@ export const GlobalSlice = createSlice({
     },
     setUserDetails:(state,action)=>{
       state.userDetails = action.payload
+    },
+    setBadges:(state,action)=>{
+      state.badges.all = action.payload.all;
+      state.badges.miss = action.payload.miss;
+      state.badges.completed = action.payload.completed;
+      state.badges.today = action.payload.today;
+
     }
   },
 });
 
-export const { isLoggedIn, setWizardCurrentStep,setProfileDetails ,setUserDetails} = GlobalSlice.actions;
+export const { isLoggedIn, setWizardCurrentStep,setProfileDetails ,setUserDetails,setBadges} = GlobalSlice.actions;
 
 export default GlobalSlice.reducer;

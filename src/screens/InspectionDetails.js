@@ -265,6 +265,7 @@ export default function InspectionDetails({navigation}) {
                     <FadeTextMedium>Customer</FadeTextMedium>
                   </View>
                 </View>
+                
               </View>
               <View style={[{width: '45%', backgroundColor: 'transparent'}]}>
                 <DarkTextSmall style={[{padding: 5}]}>

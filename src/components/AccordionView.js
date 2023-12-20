@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState,useContext} from 'react';
 import {
   View,
   Text,
@@ -9,8 +9,10 @@ import {
   ActivityIndicator,
   FlatList,
   Image,
+  Platform,
+  Alert
 } from 'react-native';
-import {LIGHT_BLUE, THEME_COLOR, globalStyles, width} from '../utils/Style';
+import {LIGHT_BLUE, ORANGE_COLOR, THEME_COLOR, globalStyles, width} from '../utils/Style';
 import {
   CustomDropdown,
   CustomTextInput,
@@ -30,6 +32,9 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getStateFromPath} from '@react-navigation/native';
 import {setWizardCurrentStep} from '../../redux/features/GlobalSlice';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { ParentContext } from '../wizardscreens/Step_1';
+import VideoComponent from './VideoComponent';
+
 
 const AccordionView = ({
   isSubChild,
@@ -75,12 +80,21 @@ const AccordionView = ({
   ]);
 
   const dispatch = useDispatch();
+  const parentFunction = useContext(ParentContext);
+
+
   const wizobj = useSelector(state => state.global.wizardObj);
   // console.log("wizard obj =>",wizobj);
   useEffect(() => {
     setData();
     // changeData();
   }, []);
+  useEffect(() => {
+    
+    
+    // changeData();
+  }, [toggle]);
+
 
   const setData = async () => {
     try {
@@ -109,27 +123,56 @@ const AccordionView = ({
     setSendData(prevData => ({...prevData, [field.name]: event}));
   };
 
-  const handleClickPhotoChange = (photo) => {
-    
-    // let arr = [...clickedPhoto];
-    // arr.map((item,ind)=>{
-    //   const formData = new FormData();
-    //   formData.append('file', {
-    //     uri: item.path,
-    //     type: 'image/jpeg',
-    //     name: 'photo_'+ind.toString()+'.jpg',
-    //   });
+  const handleClickPhotoChange = (photo,field) => {  
 
-    // })
-
-    // console.log("form data =>",formData);
-    
-
-    setClickedPhotos(prevData => [...prevData, photo]);
+    // console.log("photo before   ",photo);
+    setSendData((prevData) => {
+      // Create a copy of the object
+      const newObj = { ...prevData };
+      // If the key exists in the object, push the photo to the array
+      if (newObj[field.name]) {
+        newObj[field.name].push(photo);
+      } else {
+        // If the key does not exist, create a new array with the photo
+        if(photo == ""){
+          newObj[field.name] = new Array();
+        }
+        else{
+          newObj[field.name] = [photo];
+        }
+      }
+      // Return the updated object
+      return newObj;
+    });
   };
 
-  // console.log('profile =>',title)
+  const handleClickPhotoDelete = (photo,field) => {  
+
+    // console.log("photo before   ",photo);
+    setSendData((prevData) => {
+      // Create a copy of the object
+      const newObj = { ...prevData };
+      // If the key exists in the object, push the photo to the array
+
+      const newArray = newObj[field.name].filter((element) => element !== photo);
+
+      // if (newObj[field.name]) {
+      //   newObj[field.name].push(photo);
+      // } else {
+        // If the key does not exist, create a new array with the photo
+        newObj[field.name] = newArray;
+      // }
+      // Return the updated object
+      return newObj;
+    });
+  };
+
+
+
+  // console.log('profile =>',fields)
   // console.log('send data =>', send_data);
+  // console.log('send data  length=>', send_data.engine_video != undefined ? send_data.engine_video.length:null);
+
   // console.log('photo image =>',clickedPhoto.length > 0 ?  clickedPhoto[0]._parts:null)
   // const toggleModal = (image, text) => {
   //   setSelectedImage(image);
@@ -190,8 +233,12 @@ const AccordionView = ({
         );
       case 'file':
         return (
-          <CameraComponent fields={field} photoArray={handleClickPhotoChange} />
+          <CameraComponent deletePhoto={handleClickPhotoDelete} fields={field} photoArray={handleClickPhotoChange} />
         );
+      case 'video':
+      return (
+        <VideoComponent deletePhoto={handleClickPhotoDelete} fields={field} videoArray={handleClickPhotoChange} />
+      );
       case 'textarea':
         return (
           <CustomTextInput
@@ -206,30 +253,59 @@ const AccordionView = ({
     }
   };
 
+  const image = <Image source={require('../assets/IMG_20230629_140254_867.jpg')} width={100} height={100} />;
+
+  const showAlert = (message) => {
+    Alert.alert(
+      'Submitted Successfully !',
+      message,
+      [
+        {
+          text: 'OK',
+          onPress: () => {},
+          image,
+        },
+      ],
+    );
+  };
+
 
   const onSubmit = async () => {
     setToggle(true);
     try {
-      setSendData(prevData => ({...prevData, ['front_bumper']: clickedPhoto}));
+      // setSendData(prevData => ({...prevData, ['front_bumper']: clickedPhoto}));
       const res = await submitForm({data: send_data});
       console.log('res => ', res.data.data);
 
       if (res != null && res.data.data.code == 200) {
+          parentFunction();
+          showAlert(res.data.data.message)
         setError(prev => ({
           ...prev,
           success: res.data.data.message,
           error: '',
         }));
         if (isSubChild) {
+
+          fields.map((item,ind)=>{
+            if(item.type == 'file'){
+              setSendData((prev)=>({...prev,[item.name]:[]}))
+            }
+          })
+
+
+
           setTimeout(() => {
-            handleAccordion(!expanded), changeData();
+            handleAccordion(!expanded),changeData();
           }, 1000);
         } else {
+
           let obj = {...wizobj};
           obj.currentStep = item[parseInt(obj.index) + 1].name.toLowerCase();
           obj.index = parseInt(obj.index) + 1;
           dispatch(setWizardCurrentStep(obj));
         }
+
       } else if (res.error != '') {
         setError(prev => ({...prev, error: '**' + res.error}));
       } else {
@@ -274,14 +350,17 @@ const AccordionView = ({
                 {
                   width: '100%',
                   // padding:10,
-                  height: 30,
-                  backgroundColor: THEME_COLOR,
+                  height: 40,
+                  backgroundColor: ORANGE_COLOR,
                   borderRadius: 10,
                 },
                 globalStyles.flexBox,
               ]}
               onPress={onSubmit}
-              activeOpacity={0.9}>
+              activeOpacity={0.9}
+              disabled={toggle}
+              >
+              
               {toggle ? (
                 <ActivityIndicator size={'small'} color={'white'} />
               ) : (

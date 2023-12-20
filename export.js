@@ -6,6 +6,8 @@ export {default as Login} from './src/screens/Login'
 export {default as AccountSection} from './src/screens/AccountSection'
 export {default as NewInspection} from './src/screens/NewInspection'
 export {default as MissInspection} from './src/screens/MissInspection'
+export {default as CompletedInspection} from './src/screens/CompletedInspection'
+
 export {default as InspectionDetails} from './src/screens/InspectionDetails'
 export {default as StackNavigation} from './src/navigations/StackNavigation'
 export {default as WizardProgressBar} from './src/components/WizardProgressBar.js'

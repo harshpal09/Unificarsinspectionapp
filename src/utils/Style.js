@@ -7,11 +7,11 @@ export const {width,height} = Dimensions.get('screen')
 //Triadic colors: #1F51FF (base), #FF1F69 (pink/red), #69FF1F (green)
 //Analogous colors: #1F51FF (base), #3E61FF (lighter blue), #FF691F (orange)
 //Complementary color: #FF691F (orange)
-
+export const BASE_URL = "https://aqua.thebharatech.com/"
 export const THEME_COLOR = "#1F51FF"
 export const LIGHT_BLUE = "#5481ff"
 export const LIGHT_BLUE_BACKGROUND = '#d7dffc'
-
+export const ORANGE_COLOR = "#FF691F"
 
 
 export const globalStyles = StyleSheet.create({

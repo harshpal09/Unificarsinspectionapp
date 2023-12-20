@@ -1,6 +1,11 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import axios from 'axios'
+import { useDispatch, useSelector } from 'react-redux'
+import { setBadges } from '../../redux/features/GlobalSlice'
+
+
+
 export  const login = async({email,password}) => {
     console.log("agya")
     let response ={
@@ -24,9 +29,9 @@ export  const login = async({email,password}) => {
   
 }
 export  const submitForm = async({data}) => {
-  console.log("==========================================================")
-  console.log("api data =>",data)
-  console.log("==========================================================")
+  // console.log("==========================================================")
+  // console.log("api data =>",data)
+  // console.log("==========================================================")
 
 
   let response ={
@@ -52,8 +57,8 @@ export  const submitForm = async({data}) => {
 
 }
 
-export  const allInspection = async({id ,status}) => {
-// console.log("agya")
+export  const allInspection = async({id ,status,dispatch,badges}) => {
+// console.log('id =>',id," status =>",status);\
   let response ={
       error:'',
       data:{},
@@ -66,10 +71,19 @@ export  const allInspection = async({id ,status}) => {
               status:status,
           }
         );
+        // console.log("for res ",status," =>",response.data.data);
+        let obj = {...badges};
+        // console.log(" obj =>",obj)
+        obj[status] = response.data.data.data.length;
+         
+        dispatch(setBadges(obj));
+        // console.log("api badges=>",badges);
       return response;
      
   }
   catch(error){
+    // console.log("error =>",error);
+
       response.error = error
       return response;
   }

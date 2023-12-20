@@ -37,16 +37,16 @@ const WizardProgressBar = ({route}) => {
     },
   ]);
 
-  useEffect(() => {
-    // Update header back button dynamically
-    navigation.setOptions({
-      headerLeft: () => (
-        <TouchableOpacity style={{paddingHorizontal:10}} onPress={() => {handleStepPress(0),navigation.replace('tab')}}>
-          <Ionicons name={'chevron-back'} color="white" size={25} />
-        </TouchableOpacity>
-      ),
-    });
-  }, [currentStep, wizobj]);
+  // useEffect(() => {
+  //   // Update header back button dynamically
+  //   navigation.setOptions({
+  //     headerLeft: () => (
+  //       <TouchableOpacity style={{paddingHorizontal:10}} onPress={() => {handleStepPress(0),navigation.replace('tab')}}>
+  //         <Ionicons name={'chevron-back'} color="white" size={25} />
+  //       </TouchableOpacity>
+  //     ),
+  //   });
+  // }, [currentStep, wizobj]);
   // console.log("success step =>",wizobj.index)
   const handleStepPress = (step) => {
     setCurrentStep(step);

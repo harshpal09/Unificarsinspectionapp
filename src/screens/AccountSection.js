@@ -12,31 +12,34 @@ const url = 'https://www.google.com/imgres?imgurl=https%3A%2F%2Fcdn.pixabay.com%
 export default function AccountSection() {
   
   const dispatch = useDispatch();
-  const isuserLoggedIn = useSelector((state)=> state.global.isUserLoggedIn)
+  const val = useSelector((s)=>s.global.userDetails)
+  
+  var data = typeof val === 'object' ? val : JSON.parse(val);
+  // console.log("data details => ",data.name);
   const car_details = [
     {
       key: 'Role',
-      value: 'Car jockey',
+      value: data.role,
     },
     {
       key: 'Name',
-      value: 'Vikas Tyagi',
+      value: data.name,
     },
     {
       key: 'E-Mail',
-      value: 'vikas.tyagi@unificars.com',
+      value: data.email,
     },
     {
       key: 'Address',
-      value: 'Moti nagar',
+      value: data.address,
     },
     {
       key: 'Location',
-      value: 'Delhi',
+      value: data.branch,
     },
     {
       key: 'Department',
-      value: 'C2B',
+      value: data.department,
     },
   ]
 
@@ -81,8 +84,8 @@ export default function AccountSection() {
       <ProfileContainer style={[globalStyles.flexBox]}>
         <View style={[{width:'80%',padding:10,marginTop:-85},globalStyles.flexBoxAlign]}>
             <Image source={{uri:'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIAH4AfgMBIgACEQEDEQH/xAAaAAEAAwEBAQAAAAAAAAAAAAAABQYHBAID/8QAMhAAAgIBAgMECQMFAAAAAAAAAAECAwQFEQYhURIxQYETIjJhcaGxwdEjUpEUQmJysv/EABYBAQEBAAAAAAAAAAAAAAAAAAABAv/EABYRAQEBAAAAAAAAAAAAAAAAAAARAf/aAAwDAQACEQMRAD8A1IAGmQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOHWdQjpmn2ZDSc16tcX4yfd+fID4azrmLpS7Mv1b2t41Rez834FXyOLdTsnvU6qY9Iw3+bIS62y+2dt03Oyb7UpPvbPBYiyYXGGbXJLLqrvh4uK7EvwW3Ts/G1GhXYtnaXdKL5OL6NGXHdo+o2aXmxvhu4d1kP3x6BWmg81zhbCNlclKEknFrxR6IAAAAAAAAAAAFQ48ul28Ojf1UpTa9/cvuW8pvHkGsnDs25OEo7/Br8gVYAGkAATVxoXCV0rtCoUnu63KHkny+TJkhODoOGhVtr25yl89vsTZAAAAAAAAAAAAheLMCWdpblVFytofpIpLm14r+OfkTQAyQF21nhWvJslfgTjTZJ7yrkvUb6rbu+hX7eGtXrlt/S9tdYWRa+paREn0x6bMi+FNMO3ZOXZjHqyWx+F9VtklOqFK/dZNfRbstWiaDj6UvSdr0uQ1s7Gtuz7kvACQwcaOHh040HvGqCjv1959wCAAAAAAAAAAAA+xwatquNpdHpL5bzl7Fcfak/x7yi6prebqUmrLPR0+FMHy8+vmBdsvX9MxG4zyozmv7al238uRHS4ywU9oY2TJdWor7lI5dAUq9VcY6fJpTqya/e4pr5MlcLVMHO5YuTXOX7N9pfw+ZmAXJprk13PoIla2Ch6NxPk4co1ZrlkUd279uK+Pj5l3xsinKojfj2KyuS3UkRX1AAAAAAAAOTU8+rTcOeTdzUeUY+Mn4I6yh8Y57ytS/poP9LG5fGfi/t5MCIzsy7Pyp5GRLtTl/CXRe45wCmgAKgAABK8P6xPSsr123i2PayHT/Je9EUCK1mE42QjODUoyW6a7mj0VrgrUHdiWYVj3lRzh/o/Dyf1RZSAAAAAA8XWKmmy2Xswi5P4LmZTOcrZysse85tyk+rZpWuy7Gi5sl3+hl9DMygACoAAAAAAAAleF8h4+uY735WN1y+DXL57GjGWadJw1DFkvC6H/AEjU2RQAEH//2Q=='}} style={{width:130,height:130,borderRadius:130}} />
-            <DarkTextLarge style={{padding:5}}>Vikas Tyagi</DarkTextLarge>
-            <FadeTextMedium style={{fontWeight:'500'}}>vikas.tyagi@unificars.com</FadeTextMedium>
+            <DarkTextLarge style={{padding:5}}>{data.name}</DarkTextLarge>
+            <FadeTextMedium style={{fontWeight:'500'}}>{data.email}</FadeTextMedium>
         </View>
         <View style={{width:'98%',borderBottomColor:'lightgrey',borderBottomWidth:1}}></View>
         <View style={[globalStyles.flexBox, { width: '100%', padding: 2 }]}>
