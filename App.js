@@ -9,9 +9,9 @@ import { View,ActivityIndicator } from 'react-native';
 import { allInspection } from './src/services/Api';
 
 const App = () => {
-  const isuserLoggedIn = useSelector((state)=> state.global.badges)
+  const isuserLoggedIn = useSelector((state)=> state.global.isUserLoggedIn)
   // const [data, setUserData] = useState({})
-  // console.log('badges =>',isuserLoggedIn)
+  console.log('badges =>',isuserLoggedIn)
   const val = useSelector((s)=>s.global.userDetails)
   
   var user_data = typeof val === 'object' ? val : JSON.parse(val);

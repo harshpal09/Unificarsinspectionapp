@@ -20,9 +20,9 @@ import axios from 'axios';
 const Stack = createStackNavigator();
 
 const LoginComponent = () => {
-  const isGlobalBoolean = useSelector(state => state.global.userDetails);
+  const isuserLoggedIn = useSelector((state)=> state.global.isUserLoggedIn)
   const dispatch = useDispatch();
-
+  console.log("user  =>",isuserLoggedIn)
   const [focusInEmail,setFocusInEmail] = useState(false)
   const [focusInPass,setFocusInPass] = useState(false)
   const [email,setEmail] = useState('')
@@ -76,9 +76,12 @@ const LoginComponent = () => {
         if(res != null && res.data.data.code == 200){
           const jsonValue = JSON.stringify(res.data.data.data);
           try {
+        
             await AsyncStorage.setItem('user', JSON.stringify(jsonValue));
             dispatch(setUserDetails(res.data.data.data));
             dispatch(isLoggedIn(true))
+            
+
           } catch (error) {
             console.log("error - ",error)
             setError(prev => ({ ...prev, error:"**Something went wrong to save user data"}))

@@ -18,6 +18,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Video from 'react-native-video';
 import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import TimerComponent from './TimerComponent';
+// import RNFS from 'react-native-fs';
+
 
 
 const VideoComponent = ({ onVideoCapture, videoArray, fields,deletePhoto }) => {
@@ -130,8 +132,7 @@ const requestCameraAndMicrophonePermission = async () => {
         //   console.log('Video recorded:', video);
           setCapturedVideos((prevVideos) => [...prevVideos, video]);
             setShowCapturedVideos(true);
-          videoToBase64(video.path)
-
+            fetchVideoAndConvertToBase64(video.path)
           
         },
         onRecordingError: (error) => {
@@ -148,40 +149,31 @@ const requestCameraAndMicrophonePermission = async () => {
       setIsRecording(false);
     }
   };
-  console.log("show time => ",showTimer," isRecording =>",isRecording);
-  async function videoToBase64(videoPath) {
+  // console.log("show time => ",showTimer," isRecording =>",isRecording);
+  async function fetchVideoAndConvertToBase64(videoUrl) {
     try {
-      // Fetch the video file
-      const response = await fetch(videoPath);
-      const blob = await response.blob();
+      const response = await axios.get(videoUrl, { responseType: 'arraybuffer' });
   
-      // Convert the blob to Base64
-      const base64 = await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onerror = reject;
-        reader.onload = () => resolve(reader.result.split(',')[1]);
-        reader.readAsDataURL(blob);
-      });
-  
-      // Log or use the Base64 string as needed
-    //   console.log('Base64:', base64);
-
-      videoArray(base64,fields);
-  
-      return base64;
+      if (response.status === 200) {
+        const base64 = Buffer.from(response.data, 'binary').toString('base64');
+        console.log("base64 =>",base64)
+        return base64;
+      } else {
+        console.error('Failed to fetch video:', response.status, response.statusText);
+        throw new Error('Failed to fetch video');
+      }
     } catch (error) {
-      console.error('Error converting video to Base64:', error);
+      console.error('Error fetching video:', error.message);
       throw error;
     }
   }
-
   // console.log("is recording =>",isRecording)
   
 //   // Example usage
 //   const videoPath = 'file:///path/to/your/video.mp4';
 //   videoToBase64(videoPath);
   
-  console.log("set capture videos => ",capturedVideos.length);
+  console.log("set capture videos => ",capturedVideos);
   const handleStopRecording = async () => {
     try {
       await cameraRef.current.stopRecording();

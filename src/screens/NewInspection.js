@@ -31,6 +31,7 @@ import {
 } from '../components/StyledComponent';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {allInspection} from '../services/Api';
+import { useFocusEffect } from '@react-navigation/native';
 export default function NewInspection({navigation}) {
   const badges = useSelector(s => s.global.badges);
   const dispatch = useDispatch();
@@ -38,6 +39,12 @@ export default function NewInspection({navigation}) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getData();
+    }, [])
+  );
 
   useEffect(() => {
     getData();
@@ -48,6 +55,7 @@ export default function NewInspection({navigation}) {
   };
 
   const getData = async () => {
+    // console.log("new inspection")
     try {
       setLoading(true);
       const response = await allInspection({id: 87, status: 'today',dispatch:dispatch,badges:badges});

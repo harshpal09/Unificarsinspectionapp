@@ -1,6 +1,6 @@
 {
-  "name": "Unificarsinspectionapp",
-  "version": "1.0.1",
+  "name": "unificarsinspectionapp",
+  "version": "1.0.3",
   "private": true,
   "scripts": {
     "android": "react-native run-android",

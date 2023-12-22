@@ -15,6 +15,7 @@ import {
 } from 'react-native-vision-camera';
 import {THEME_COLOR, globalStyles, height, width} from '../utils/Style';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 
 const CameraComponent = ({onPhotoCapture, photoArray, deletePhoto,fields}) => {
   const {hasPermission, requestPermission} = useCameraPermission();

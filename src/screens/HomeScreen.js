@@ -32,6 +32,7 @@ import {
 } from '../components/StyledComponent';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {allInspection} from '../services/Api';
+import { useFocusEffect } from '@react-navigation/native';
 export default function HomeScreen({navigation}) {
   const badges = useSelector(s => s.global.badges);
   const val = useSelector((s)=>s.global.userDetails)
@@ -44,6 +45,11 @@ export default function HomeScreen({navigation}) {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
+  useFocusEffect(
+    React.useCallback(() => {
+      getData();
+    }, [])
+  );
   useEffect(() => {
     getData();
   }, []);

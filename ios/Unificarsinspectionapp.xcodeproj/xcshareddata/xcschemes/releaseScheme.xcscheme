@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "Unificarsinspectionapp.app"
-               BlueprintName = "Unificarsinspectionapp"
+               BuildableName = "UnificarsInspectionApp.app"
+               BlueprintName = "UnificarsInspectionApp"
                ReferencedContainer = "container:Unificarsinspectionapp.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -44,8 +44,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "Unificarsinspectionapp.app"
-            BlueprintName = "Unificarsinspectionapp"
+            BuildableName = "UnificarsInspectionApp.app"
+            BlueprintName = "UnificarsInspectionApp"
             ReferencedContainer = "container:Unificarsinspectionapp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -61,8 +61,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "Unificarsinspectionapp.app"
-            BlueprintName = "Unificarsinspectionapp"
+            BuildableName = "UnificarsInspectionApp.app"
+            BlueprintName = "UnificarsInspectionApp"
             ReferencedContainer = "container:Unificarsinspectionapp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

@@ -12,6 +12,8 @@ const url = 'https://www.google.com/imgres?imgurl=https%3A%2F%2Fcdn.pixabay.com%
 export default function AccountSection() {
   
   const dispatch = useDispatch();
+  const islogin = useSelector((s)=>s.global.isUserLoggedIn)
+  console.log('is login => ',islogin)
   const val = useSelector((s)=>s.global.userDetails)
   
   var data = typeof val === 'object' ? val : JSON.parse(val);
@@ -72,8 +74,10 @@ export default function AccountSection() {
 
   const logout = async () => {
     try {
-        await AsyncStorage.removeItem('user');
+        let res = await AsyncStorage.removeItem('user');
+        console.log("res => ",res)
         dispatch(isLoggedIn(false))
+        
     } catch (e){
       console.log("error in logged out",e)
     }
