@@ -7,10 +7,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { isLoggedIn, setBadges, setUserDetails } from './redux/features/GlobalSlice';
 import { View,ActivityIndicator } from 'react-native';
 import { allInspection } from './src/services/Api';
+import UseNet from './src/utils/UseNet';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
 
 const App = () => {
+
   const isuserLoggedIn = useSelector((state)=> state.global.isUserLoggedIn)
-  // const [data, setUserData] = useState({})
   console.log('badges =>',isuserLoggedIn)
   const val = useSelector((s)=>s.global.userDetails)
   
@@ -85,15 +88,18 @@ if (isLoading) {
 }
 
   return (
+    <GestureHandlerRootView style={{flex:1}}>
     <NavigationContainer>
      {isuserLoggedIn ?   <StackNavigation />:<Login/>}
     </NavigationContainer>
+    </GestureHandlerRootView>
   );
 }
 
 export default function Root() {
   return (
     <Provider store={store}>
+      {/* <UseNet /> */}
       <App />
     </Provider>
   );

@@ -57,7 +57,7 @@ export  const submitForm = async({data}) => {
 
 }
 
-export  const allInspection = async({id ,status,dispatch,badges}) => {
+export  const allInspection = async({id ,status}) => {
 // console.log('id =>',id," status =>",status);\
   let response ={
       error:'',
@@ -72,11 +72,9 @@ export  const allInspection = async({id ,status,dispatch,badges}) => {
           }
         );
         // console.log("for res ",status," =>",response.data.data);
-        let obj = {...badges};
         // console.log(" obj =>",obj)
-        obj[status] = response.data.data.data.length;
          
-        dispatch(setBadges(obj));
+        // dispatch(setBadges(obj));
         // console.log("api badges=>",badges);
       return response;
      

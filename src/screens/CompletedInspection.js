@@ -1,86 +1,100 @@
 import {
-    StyleSheet,
-    Text,
-    View,
-    Button,
-    SafeAreaView,
-    Image,
-    FlatList,
-    Linking,
-    TouchableOpacity,
-    ActivityIndicator,
-    RefreshControl,
-  } from 'react-native';
-  import React, {useEffect, useState} from 'react';
-  import {useDispatch, useSelector} from 'react-redux';
-  import {
-    isLoggedIn,
-    setBadges,
-    setProfileDetails,
-  } from '../../redux/features/GlobalSlice';
-  import { THEME_COLOR, globalStyles, height, width} from '../utils/Style';
-  import {
-    DarkTextLarge,
-    DarkTextMedium,
-    DarkTextSmall,
-    FadeTextMedium,
-    FadeTextSmall,
-    FloatingButton,
-    ItemContainer,
-    MainContainer,
-  } from '../components/StyledComponent';
-  import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-  import {allInspection} from '../services/Api';
-  export default function CompletedInspection({navigation}) {
-    const badges = useSelector(s => s.global.badges);
-    const val = useSelector((s)=>s.global.userDetails)
-  
-    var user_data = typeof val === 'object' ? val : JSON.parse(val);
-    const dispatch = useDispatch();
-    const [containerHeight, setContainerHeight] = useState(0);
-    const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [refreshing, setRefreshing] = useState(false);
-  
-    useEffect(() => {
+  StyleSheet,
+  Text,
+  View,
+  Button,
+  SafeAreaView,
+  Image,
+  FlatList,
+  Linking,
+  TouchableOpacity,
+  ActivityIndicator,
+  RefreshControl,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {
+  isLoggedIn,
+  setBadges,
+  setCompleted,
+  setProfileDetails,
+} from '../../redux/features/GlobalSlice';
+import {THEME_COLOR, globalStyles, height, width} from '../utils/Style';
+import {
+  DarkTextLarge,
+  DarkTextMedium,
+  DarkTextSmall,
+  FadeTextMedium,
+  FadeTextSmall,
+  FloatingButton,
+  ItemContainer,
+  MainContainer,
+} from '../components/StyledComponent';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {allInspection} from '../services/Api';
+import { useFocusEffect } from '@react-navigation/native';
+import Search from '../components/Search';
+export default function CompletedInspection({navigation}) {
+  const badges = useSelector(s => s.global.badges);
+  const val = useSelector(s => s.global.userDetails);
+
+  var user_data = typeof val === 'object' ? val : JSON.parse(val);
+  const dispatch = useDispatch();
+  const [containerHeight, setContainerHeight] = useState(0);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [filter,setFilter] = useState([]);
+
+  useFocusEffect(
+    React.useCallback(() => {
       getData();
-    }, []);
-  
-    const openPhoneDialer = number => {
-      Linking.openURL(`tel:${number}`);
-    };
-  
-    const getData = async () => {
-      try {
-        setLoading(true);
-        const response = await allInspection({id:user_data.id , status: 'completed',dispatch:dispatch,badges:badges});
-  
-        if (response.data.data.code != undefined && response.data.data.code) {
-          // console.log("data =>", response.data.data.data);
-          let obj = {...badges};
-          obj.completed = response.data.data.data.length;
-  
-          dispatch(setBadges(obj));
-          setData(response.data.data.data);
-        } else {
-        }
-      } catch (error) {
-        console.log('error ', error);
-      } finally {
-        setLoading(false);
-        setRefreshing(false);
+    }, []),
+  );
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const openPhoneDialer = number => {
+    Linking.openURL(`tel:${number}`);
+  };
+
+  const getData = async () => {
+    try {
+      setLoading(true);
+      const response = await allInspection({
+        id: user_data.id,
+        status: 'completed',
+      });
+
+      if (response.data.data.code != undefined && response.data.data.code) {
+        dispatch(setCompleted(response.data.data.data.length));
+        setData(response.data.data.data);
+      } else {
       }
-    };
-  
-    // console.log("data =>",data);
-    return (
-      <MainContainer
-      //  style={{ flex: 1,padding:10 }}
-      >
-        {data.length > 0 ?
+    } catch (error) {
+      console.log('error ', error);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
+  // console.log("data =>",data);
+  return (
+    <MainContainer
+    //  style={{ flex: 1,padding:10 }}
+    >
+      <Search data={data} setFilter={setFilter}/>
+            {loading ?<View
+              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+              <ActivityIndicator size="large" color={THEME_COLOR} />
+            </View>:
+        <>
+      {data.length > 0 ? (
         <FlatList
-          style={{...StyleSheet.absoluteFillObject, paddingHorizontal: 10}}
-          data={data}
+          style={{...StyleSheet.absoluteFillObject, paddingHorizontal: 10,paddingTop:60}}
+          data={filter.length > 0 ? filter : data}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={getData} />
           }
@@ -217,7 +231,9 @@ import {
                             color:
                               item.item.approvstatus == 1 ? 'green' : '#d9a107',
                           }}>
-                          {item.item.approvstatus == 1 ? 'Approved' : 'No Action'}
+                          {item.item.approvstatus == 1
+                            ? 'Approved'
+                            : 'No Action'}
                         </DarkTextSmall>
                       </View>
                     </View>
@@ -347,14 +363,14 @@ import {
             </ItemContainer>
           )}
         />
-              :
-        <View style={[{flex:1},globalStyles.flexBox]}>
+      ) : (
+        <View style={[{flex: 1}, globalStyles.flexBox]}>
           <DarkTextMedium>No Lead Assign yet</DarkTextMedium>
         </View>
-        }
-      </MainContainer>
-    );
-  }
-  
-  const styles = StyleSheet.create({});
-  
+      )}
+      </>}
+    </MainContainer>
+  );
+}
+
+const styles = StyleSheet.create({});

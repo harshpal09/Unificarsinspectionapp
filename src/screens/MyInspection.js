@@ -7,7 +7,7 @@ import {
   Image,
   FlatList,
   Linking,
-  TouchableOpacity,ActivityIndicator,RefreshControl
+  TouchableOpacity,ActivityIndicator,RefreshControl, ScrollView
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
@@ -28,6 +28,11 @@ import { useFocusEffect } from '@react-navigation/native';
 export default function MyInspection({navigation}) {
   const badges = useSelector(s => s.global.badges);
   const dispatch = useDispatch();
+
+  const val = useSelector((s)=>s.global.userDetails)
+  
+  var user_data = typeof val === 'object' ? val : JSON.parse(val);
+
   const [containerHeight, setContainerHeight] = useState(0);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -50,7 +55,7 @@ export default function MyInspection({navigation}) {
   const getData = async () => {
     try {
       setLoading(true);
-      const response = await allInspection({ id: 87, status: 'pending' });
+      const response = await allInspection({ id: user_data.id, status: 'pending' });
 
       if (response.data.data.code != undefined && response.data.data.code) {
         // console.log("data =>", response.data.data.data);
@@ -75,6 +80,9 @@ export default function MyInspection({navigation}) {
     <MainContainer
     // style={{ flex: 1,padding:10 }}
     >
+      {loading ? <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <ActivityIndicator size="large" color={THEME_COLOR} />
+          </View>: <>
       <FlatList
         style={{ ...StyleSheet.absoluteFillObject,paddingHorizontal:10  }}
         data={data}
@@ -82,9 +90,13 @@ export default function MyInspection({navigation}) {
           <RefreshControl refreshing={refreshing} onRefresh={getData} />
         }
         ListEmptyComponent={() => (
-          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <ActivityIndicator size="large" color={THEME_COLOR} />
-          </View>
+          <ScrollView style={{backgroundColor:'transparent'}} showsVerticalScrollIndicator={false} refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={getData} />
+          }>
+            <View style={[{flex: 1,backgroundColor:'transparent',height:height-200}, globalStyles.flexBox]}>
+              <DarkTextMedium>No Pending Inspection assign yet</DarkTextMedium>
+            </View>
+          </ScrollView>
         )}
         renderItem={(item) => (
           <ItemContainer
@@ -353,6 +365,7 @@ export default function MyInspection({navigation}) {
           </ItemContainer>
         )}
       />
+      </>}
     </MainContainer>
     </SafeAreaView>
   );

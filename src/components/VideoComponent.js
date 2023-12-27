@@ -18,7 +18,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Video from 'react-native-video';
 import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import TimerComponent from './TimerComponent';
-// import RNFS from 'react-native-fs';
+import RNFS from 'react-native-fs';
 
 
 
@@ -132,7 +132,7 @@ const requestCameraAndMicrophonePermission = async () => {
         //   console.log('Video recorded:', video);
           setCapturedVideos((prevVideos) => [...prevVideos, video]);
             setShowCapturedVideos(true);
-            fetchVideoAndConvertToBase64(video.path)
+             fetchVideoAndConvertToBase64(video.path)
           
         },
         onRecordingError: (error) => {
@@ -149,24 +149,49 @@ const requestCameraAndMicrophonePermission = async () => {
       setIsRecording(false);
     }
   };
-  // console.log("show time => ",showTimer," isRecording =>",isRecording);
+
   async function fetchVideoAndConvertToBase64(videoUrl) {
     try {
-      const response = await axios.get(videoUrl, { responseType: 'arraybuffer' });
-  
-      if (response.status === 200) {
-        const base64 = Buffer.from(response.data, 'binary').toString('base64');
-        console.log("base64 =>",base64)
-        return base64;
-      } else {
-        console.error('Failed to fetch video:', response.status, response.statusText);
-        throw new Error('Failed to fetch video');
-      }
+      const videoData = await RNFS.readFile(videoUrl, 'base64');
+
+      videoArray(videoData,fields);
+
+      // return videoData;
     } catch (error) {
-      console.error('Error fetching video:', error.message);
+      console.error('Error reading video file:', error);
       throw error;
     }
   }
+  const convertToBase64 = async(videoUrl) =>{
+    try {
+      const videoData = await RNFS.readFile(videoUrl, 'base64');
+
+      
+
+      return videoData;
+    } catch (error) {
+      console.error('Error reading video file:', error);
+      throw error;
+    }
+  }
+  // console.log("show time => ",showTimer," isRecording =>",isRecording);
+  // async function fetchVideoAndConvertToBase64(videoUrl) {
+  //   try {
+  //     const response = await axios.get(videoUrl, { responseType: 'arraybuffer' });
+  
+  //     if (response.status === 200) {
+  //       const base64 = Buffer.from(response.data, 'binary').toString('base64');
+  //       console.log("base64 =>",base64)
+  //       return base64;
+  //     } else {
+  //       console.error('Failed to fetch video:', response.status, response.statusText);
+  //       throw new Error('Failed to fetch video');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching video:', error.message);
+  //     throw error;
+  //   }
+  // }
   // console.log("is recording =>",isRecording)
   
 //   // Example usage
@@ -242,7 +267,7 @@ const requestCameraAndMicrophonePermission = async () => {
                 />
                 <TouchableOpacity
                   onPress={async() => {
-                    let base64 = await videoToBase64(item.path);
+                    const base64 = await convertToBase64(item.path);
                     deletePhoto(base64,fields);
                     let arr = capturedVideos.filter((_, ind) => ind !== index);
                     setCapturedVideos(arr);
@@ -420,7 +445,7 @@ const requestCameraAndMicrophonePermission = async () => {
                 <TouchableOpacity
                   style={styles.deleteImageButton}
                   onPress={async() => {
-                    let base64 = await videoToBase64(item.path);
+                    const base64 = await convertToBase64(item.path);
                     deletePhoto(base64,fields);
                     let arr = capturedVideos.filter((_, ind) => ind !== index);
                     setCapturedVideos(arr);

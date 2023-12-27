@@ -16,6 +16,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {
   isLoggedIn,
   setBadges,
+  setMiss,
   setProfileDetails,
 } from '../../redux/features/GlobalSlice';
 import { THEME_COLOR, globalStyles, height, width} from '../utils/Style';
@@ -32,13 +33,19 @@ import {
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {allInspection} from '../services/Api';
 import { useFocusEffect } from '@react-navigation/native';
+import Search from '../components/Search';
 export default function MissInspection({navigation}) {
   const badges = useSelector(s => s.global.badges);
+
+  const val = useSelector(s => s.global.userDetails);
+  var user_data = typeof val === 'object' ? val : JSON.parse(val);
+
   const dispatch = useDispatch();
   const [containerHeight, setContainerHeight] = useState(0);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [filter,setFilter] = useState([]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -56,14 +63,10 @@ export default function MissInspection({navigation}) {
   const getData = async () => {
     try {
       setLoading(true);
-      const response = await allInspection({id: 87, status: 'miss',dispatch:dispatch,badges:badges});
+      const response = await allInspection({id: user_data.id, status: 'miss'});
 
       if (response.data.data.code != undefined && response.data.data.code) {
-        // console.log("data =>", response.data.data.data);
-        let obj = {...badges};
-        obj.miss = response.data.data.data.length;
-
-        dispatch(setBadges(obj));
+        dispatch(setMiss(response.data.data.data.length));
         setData(response.data.data.data);
       } else {
       }
@@ -80,10 +83,15 @@ export default function MissInspection({navigation}) {
     <MainContainer
     //  style={{ flex: 1,padding:10 }}
     >
+      <Search data={data} setFilter={setFilter} />
+     {loading ? <View
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <ActivityIndicator size="large" color={THEME_COLOR} />
+          </View>:<> 
       {data.length > 0 ?
       <FlatList
-        style={{...StyleSheet.absoluteFillObject, paddingHorizontal: 10}}
-        data={data}
+        style={{...StyleSheet.absoluteFillObject, paddingHorizontal: 10,paddingTop:60}}
+        data={filter.length > 0 ? filter : data}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={getData} />
         }
@@ -355,6 +363,7 @@ export default function MissInspection({navigation}) {
         <DarkTextMedium>No Lead Assign yet</DarkTextMedium>
       </View>
       }
+      </>}
     </MainContainer>
   );
 }

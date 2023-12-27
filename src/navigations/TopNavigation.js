@@ -1,19 +1,33 @@
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import React from 'react';
+import { SafeAreaView, StyleSheet, View, TouchableOpacity } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { CompletedInspection, HomeScreen, MissInspection, NewInspection, StackNavigation } from '../../export';
-import { THEME_COLOR } from '../utils/Style';
-import { useDispatch, useSelector } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import { CompletedInspection, HomeScreen, MissInspection, NewInspection } from '../../export';
+import { THEME_COLOR } from '../utils/Style';
+import { useSelector } from 'react-redux';
 
 const HeaderTab = createMaterialTopTabNavigator();
 
-export default function TopNavigation({ navigation }) {
+const TopNavigation = () => {
+  const navigation = useNavigation();
 
-  const badges = useSelector(s => s.global.badges);
+  const all = useSelector((s) => s.global.all);
+  const completed = useSelector((s) => s.global.completed);
+  const miss = useSelector((s) => s.global.miss);
+  const today = useSelector((s) => s.global.today);
 
-  // console.log("badges =>",badges)
+  const renderBadge = (count,name) => (
+    <View style={{ backgroundColor: 'white' }}>
+      <MaterialCommunityIcons
+        name={count > 9 ? 'numeric-9-plus-circle' : 'numeric-' + count.toString() + '-circle'}
+        color={'red'}
+        size={20}
+        style={{ fontWeight: '700', position: 'absolute', right:name == 'completed'?-5 : 10, top: 7 }}
+      />
+    </View>
+  );
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -21,42 +35,67 @@ export default function TopNavigation({ navigation }) {
         screenOptions={({ route }) => ({
           tabBarActiveTintColor: THEME_COLOR,
           tabBarIndicatorStyle: {
-            backgroundColor: THEME_COLOR
+            backgroundColor: THEME_COLOR,
           },
-          tabBarInactiveTintColor: "grey",
-          tabBarStyle: {
-          },
+          tabBarInactiveTintColor: 'grey',
+          tabBarStyle: {},
           tabBarLabelStyle: {
             fontSize: 10,
             fontWeight: '800',
           },
-          tabBarIndicatorContainerStyle: {
-
-          },
-          tabBarBadge: route.name === 'Today' ? badges.today : null,
         })}
       >
-        <HeaderTab.Screen name="Today" component={NewInspection} options={{
-          tabBarBadge: () => <View style={{backgroundColor:'white'}}><MaterialCommunityIcons name={badges.today > 9 ? 'numeric-9-plus-circle' : 'numeric-'+badges.today.toString()+'-circle'} color={'red'} size={20} style={{fontWeight:'700',position:'absolute',right:10,top:7}} /></View>,
-        }} />
-        <HeaderTab.Screen name="Completed" component={CompletedInspection}
+        <HeaderTab.Screen
+          name="Today"
+          component={NewInspection}
           options={{
-            tabBarBadge: () => <View style={{backgroundColor:'white'}}><MaterialCommunityIcons name={badges.completed > 9 ? 'numeric-9-plus-circle' : 'numeric-'+badges.completed.toString()+'-circle'} color={'red'} size={20} style={{fontWeight:'700',position:'absolute',right:-5,top:7}} /></View>,
+            tabBarBadge: () => renderBadge(today,'today'),
           }}
+          listeners={({ navigation }) => ({
+            tabPress: () => {
+              navigation.navigate('Today');
+            },
+          })}
         />
-        <HeaderTab.Screen name="Miss" component={MissInspection}
+        <HeaderTab.Screen
+          name="Completed"
+          component={CompletedInspection}
           options={{
-            tabBarBadge: () => <View style={{backgroundColor:'white'}}><MaterialCommunityIcons name={badges.miss > 9 ? 'numeric-9-plus-circle' : 'numeric-'+badges.miss.toString()+'-circle'} color={'red'} size={20} style={{fontWeight:'700',position:'absolute',right:10,top:7}} /></View>,
+            tabBarBadge: () => renderBadge(completed,'completed'),
           }}
+          listeners={({ navigation }) => ({
+            tabPress: () => {
+              navigation.navigate('Completed');
+            },
+          })}
         />
-        <HeaderTab.Screen name="All" component={HomeScreen} options={{
-
-          tabBarBadge: () => <View style={{backgroundColor:'white'}}><MaterialCommunityIcons name={badges.all > 9 ? 'numeric-9-plus-circle' : 'numeric-'+badges.all.toString()+'-circle'} color={'red'} size={20} style={{fontWeight:'700',position:'absolute',right:10,top:7}} /></View>,
-        }} />
-
+        <HeaderTab.Screen
+          name="Miss"
+          component={MissInspection}
+          options={{
+            tabBarBadge: () => renderBadge(miss,'miss'),
+          }}
+          listeners={({ navigation }) => ({
+            tabPress: () => {
+              navigation.navigate('Miss');
+            },
+          })}
+        />
+        <HeaderTab.Screen
+          name="All"
+          component={HomeScreen}
+          options={{
+            tabBarBadge: () => renderBadge(all,'all'),
+          }}
+          listeners={({ navigation }) => ({
+            tabPress: () => {
+              navigation.navigate('All');
+            },
+          })}
+        />
       </HeaderTab.Navigator>
     </SafeAreaView>
   );
-}
+};
 
-const styles = StyleSheet.create({});
+export default TopNavigation;

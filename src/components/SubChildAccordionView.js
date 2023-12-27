@@ -9,8 +9,13 @@ export default function SubChildAccordionView({mainIndex, content, length, index
     const [toggle, setToggle] = useState(false);
     const [accordion, setAccordion] = useState(true);
     const spinValue = useRef(new Animated.Value(0)).current;
+    const [backgroundColor,setBackgroundColor] = useState('white')
 
     // console.log("subchild =",content);
+
+    const handleBackgroundColor = () =>{
+        setBackgroundColor('green')
+    }
 
     const spin = () => {
         // console.log('toggle=>', toggle);
@@ -33,7 +38,7 @@ export default function SubChildAccordionView({mainIndex, content, length, index
         <View
             style={[
                 globalStyles.flexBoxJustify,
-                { width: '100%',backgroundColor:'white' },
+                { width: '100%',backgroundColor: backgroundColor},
             ]}
         >
             <TouchableOpacity
@@ -63,7 +68,7 @@ export default function SubChildAccordionView({mainIndex, content, length, index
                         { justifyContent: 'space-between', paddingHorizontal: 10 },
                     ]}>
                     <View style={[globalStyles.rowContainer, { padding: 10 }]}>
-                        <Text style={{ color: 'black', fontWeight: '700' }}>
+                        <Text style={{ color: backgroundColor == 'white' ?  'black':'white', fontWeight: '700' }}>
                             {content.name}
                         </Text>
                     </View>
@@ -76,13 +81,14 @@ export default function SubChildAccordionView({mainIndex, content, length, index
                             name="chevron-down"
                             size={18}
                             style={{ marginHorizontal: 8 }}
-                            color={'black'}
+                            color={backgroundColor == 'white' ?  'black':'white'}
                         />
                     </Animated.View>
                 </View>
             </TouchableOpacity>
 
             <AccordionView
+              setbackgroundColor={handleBackgroundColor}
               mainIndex={mainIndex}
               fieldIndex={index}
               handleAccordion={handleAccordion} 

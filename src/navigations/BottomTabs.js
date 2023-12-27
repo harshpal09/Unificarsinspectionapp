@@ -40,8 +40,18 @@ export default function BottomTabs() {
        name="MyInspection" 
        component={MyInspection} 
        options={{
-        
-        headerShown: false,
+        headerShown: true,
+          headerStyle:{
+            backgroundColor:THEME_COLOR,
+          },
+          headerTitleStyle:{
+            color:"#FFF",
+            alignSelf:'flex-start',
+            fontWeight:"bold"
+            // backgroundColor:'red',
+            // width:'100%'
+          },
+        headerTitle: 'My Inspections',
         tabBarLabel: 'My Inspections',
         tabBarIcon: ({color, size}) => (
           <MaterialCommunityIcons name="clipboard-text-search" color={color} size={size} />

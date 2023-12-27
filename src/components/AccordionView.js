@@ -44,6 +44,7 @@ const AccordionView = ({
   handleAccordion,
   fieldIndex,
   mainIndex,
+  setbackgroundColor
 }) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedText, setSelectedText] = useState(null);
@@ -170,8 +171,8 @@ const AccordionView = ({
 
 
   // console.log('profile =>',fields)
-  // console.log('send data =>', send_data);
-  console.log('send data  length=>', send_data.engine_video != undefined ? send_data.engine_video:null);
+  console.log('send data =>', send_data);
+  console.log('send data  length=>', send_data.engine_video != undefined ? send_data.engine_video.length:null);
 
   // console.log('photo image =>',clickedPhoto.length > 0 ?  clickedPhoto[0]._parts:null)
   // const toggleModal = (image, text) => {
@@ -279,7 +280,8 @@ const AccordionView = ({
 
       if (res != null && res.data.data.code == 200) {
           parentFunction();
-          showAlert(res.data.data.message)
+          // showAlert(res.data.data.message)
+          setbackgroundColor()
         setError(prev => ({
           ...prev,
           success: res.data.data.message,
