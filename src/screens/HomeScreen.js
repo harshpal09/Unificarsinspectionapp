@@ -90,11 +90,12 @@ export default function HomeScreen({navigation}) {
 
   // console.log("data =>",filter);
   return (
-    <MainContainer
-    //  style={{ flex: 1,padding:10 }}
-    >
-      <Search data={data} setFilter={setFilter}/>
-      {/* <ImageBackground
+    <MainContainer>
+    {data.length > 0 ? 
+      <Search data={data} setFilter={setFilter}/>:
+      <></>}   
+      
+         {/* <ImageBackground
         source={require('../assets/images/unifi_black_logo.png')}
         style={{flex: 1}}> */}
       {loading ? <View

@@ -83,7 +83,10 @@ export default function MissInspection({navigation}) {
     <MainContainer
     //  style={{ flex: 1,padding:10 }}
     >
-      <Search data={data} setFilter={setFilter} />
+  {data.length > 0 ? 
+      <Search data={data} setFilter={setFilter}/>:
+      <></>}  
+      
      {loading ? <View
             style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
             <ActivityIndicator size="large" color={THEME_COLOR} />

@@ -1,6 +1,6 @@
 {
   "name": "unificarsinspectionapp",
-  "version": "1.0.3",
+  "version": "2.0.1",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -29,7 +29,7 @@
     "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "^2.13.4",
     "react-native-permissions": "^4.0.1",
-    "react-native-reanimated": "^3.5.4",
+    "react-native-reanimated": "^3.6.1",
     "react-native-rename": "^3.2.13",
     "react-native-safe-area-context": "^4.7.4",
     "react-native-screens": "^3.27.0",
@@ -50,7 +50,7 @@
     "@react-native/eslint-config": "^0.72.2",
     "@react-native/metro-config": "^0.72.11",
     "@tsconfig/react-native": "^3.0.0",
-    "@types/react": "^18.0.24",
+    "@types/react": "^18.2.37",
     "@types/react-test-renderer": "^18.0.0",
     "babel-jest": "^29.2.1",
     "eslint": "^8.19.0",

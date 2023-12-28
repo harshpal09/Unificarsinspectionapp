@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Modal,
   FlatList,
+  Platform,
 } from 'react-native';
 import {
   Camera,
@@ -16,6 +17,7 @@ import {
 import {THEME_COLOR, globalStyles, height, width} from '../utils/Style';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
+import { DarkTextLarge } from './StyledComponent';
 
 const CameraComponent = ({onPhotoCapture, photoArray, deletePhoto,fields}) => {
   const {hasPermission, requestPermission} = useCameraPermission();
@@ -28,8 +30,31 @@ const CameraComponent = ({onPhotoCapture, photoArray, deletePhoto,fields}) => {
   const [showCapturedPhotos, setShowCapturedPhotos] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [isRareCamera, setIsRareCamera] = useState(true);
+  const [focusPoint, setFocusPoint] = useState({ x: 0, y: 0 });
+  const [zoom,setZoom] = useState(1);
+  const handleFocus = async (tapEvent) => {
+    // console.log("handleFocus =>",tapEvent)
+    if (cameraRef.current) {
+      try {
+        const { locationX, locationY } = tapEvent;
+        const screenWidth = width; // Replace with your actual screen width
+        const screenHeight = height; // Replace with your actual screen height
+  
+        // Calculate the normalized coordinates (values between 0 and 1)
+        const x = locationX / screenWidth;
+        const y = locationY / screenHeight;
 
-
+        // console.log("x => ",x)
+        // console.log("y =>",y);
+  
+        // Focus the camera at the specified point
+        await cameraRef.current.focus({ x, y });
+      } catch (error) {
+        console.error('Error focusing the camera:', error);
+      }
+    }
+  };
+  
   const requestCameraAndMicrophonePermission = async () => {
     const microphonePermission = Platform.select({
       ios: PERMISSIONS.IOS.MICROPHONE,
@@ -114,6 +139,7 @@ const CameraComponent = ({onPhotoCapture, photoArray, deletePhoto,fields}) => {
   const handleCapturePhoto = async () => {
     // console.log("aa raha ahai");
     try {
+      
       const photo = await cameraRef.current.takePhoto();
       setCapturedPhotos(prevPhotos => [...prevPhotos, photo]);
       // console.log("aa raha ahai 2");
@@ -167,6 +193,7 @@ const CameraComponent = ({onPhotoCapture, photoArray, deletePhoto,fields}) => {
       throw error;
     }
   };
+  console.log("zoom =>",zoom)
 
   // Example usage
 
@@ -238,6 +265,7 @@ const CameraComponent = ({onPhotoCapture, photoArray, deletePhoto,fields}) => {
       )}
 
       <Modal
+        style={{backgroundColor:'black'}}
         animationType="slide"
         transparent={false}
         visible={isCameraOpen}>
@@ -248,11 +276,20 @@ const CameraComponent = ({onPhotoCapture, photoArray, deletePhoto,fields}) => {
             isActive={true}
             ref={cameraRef}
             photo={true}
+            enableZoomGesture
             onInitialized={() => {
               // Initialization logic
             }}
+            
+            resizeMode='contain'
+            zoom={zoom}
             onError={error => {
               console.error('Camera error:', error);
+            }}
+            onTouchStart={(event) => {
+              // Handle touch events to focus the camera
+              const tapEvent = event.nativeEvent;
+              handleFocus(tapEvent);
             }}
           />
           <TouchableOpacity
@@ -261,10 +298,19 @@ const CameraComponent = ({onPhotoCapture, photoArray, deletePhoto,fields}) => {
             <MaterialCommunityIcons
               name={'camera-off'}
               size={40}
-              color={'white'}
+              color={Platform.OS ==='android'?'black':'white'}
             />
           </TouchableOpacity>
-
+          <TouchableOpacity
+            style={[{backgroundColor:'red',bottom:120,left:10,position:'absolute',padding:10,borderRadius:10}]}
+            onPress={()=>setZoom((prev)=> prev+0.1)}>
+            <DarkTextLarge style={{color:'white'}}>Zoom In +</DarkTextLarge>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[{backgroundColor:'red',bottom:120,right:10,position:'absolute',padding:10,borderRadius:10}]}
+            onPress={()=>setZoom((prev)=> prev <= 1 ? 1 : prev-0.1)}>
+            <DarkTextLarge style={{color:'white'}}>Zoom out -</DarkTextLarge>
+          </TouchableOpacity>
           <View
             style={[
               {
@@ -408,6 +454,8 @@ const styles = StyleSheet.create({
   },
   camera: {
     ...StyleSheet.absoluteFill,
+    // width:width,
+  
   },
   captureButton: {
     // position: 'absolute',

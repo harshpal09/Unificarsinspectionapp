@@ -5,11 +5,12 @@ import { store } from './redux/store/Index';// Import your Redux store
 import { BottomTabs, Login, StackNavigation } from './export';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { isLoggedIn, setBadges, setUserDetails } from './redux/features/GlobalSlice';
-import { View,ActivityIndicator } from 'react-native';
+import { View,ActivityIndicator, LogBox } from 'react-native';
 import { allInspection } from './src/services/Api';
 import UseNet from './src/utils/UseNet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs();
 
 const App = () => {
 
