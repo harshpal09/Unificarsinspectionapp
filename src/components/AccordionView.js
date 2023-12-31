@@ -170,8 +170,8 @@ const AccordionView = ({
 
 
 
-  // console.log('profile =>',fields)
-  console.log('send data =>', send_data);
+  console.log('is subfieds',isSubChild)
+  // console.log('send data =>', send_data);
   // console.log('send data  length=>', send_data.engine_video != undefined ? send_data.engine_video.length:null);
 
   // console.log('photo image =>',clickedPhoto.length > 0 ?  clickedPhoto[0]._parts:null)
@@ -276,12 +276,15 @@ const AccordionView = ({
     try {
       // setSendData(prevData => ({...prevData, ['front_bumper']: clickedPhoto}));
       const res = await submitForm({data: send_data});
-      console.log('res => ', res.data.data);
+      console.log('res => ', res.data.data.message);
 
-      if (res != null && res.data.data.code == 200) {
+      if (res != undefined && res.data.data.code == 200) {
           parentFunction();
-          // showAlert(res.data.data.message)
-          setbackgroundColor()
+          
+
+          
+          console.log("message +++",res.data.data.message)
+          
         setError(prev => ({
           ...prev,
           success: res.data.data.message,
@@ -294,20 +297,19 @@ const AccordionView = ({
               setSendData((prev)=>({...prev,[item.name]:[]}))
             }
           })
-
-
-
           setTimeout(() => {
-            handleAccordion(!expanded),changeData();
+            changeData();
           }, 1000);
         } else {
+          // console.log("message ----------=>",isSubChild)
+                    showAlert(res.data.data.message)
 
           let obj = {...wizobj};
           obj.currentStep = item[parseInt(obj.index) + 1].name.toLowerCase();
           obj.index = parseInt(obj.index) + 1;
           dispatch(setWizardCurrentStep(obj));
         }
-
+        setbackgroundColor()
       } else if (res.error != '') {
         setError(prev => ({...prev, error: '**' + res.error}));
       } else {
@@ -317,8 +319,10 @@ const AccordionView = ({
     } catch {
     } finally {
       setToggle(false);
+
     }
   };
+  console.log("messgae  => ",error)
 
   return (
     <SafeAreaView

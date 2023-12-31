@@ -16,10 +16,10 @@ import {
 } from 'react-native-vision-camera';
 import {THEME_COLOR, globalStyles, height, width} from '../utils/Style';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
-import { DarkTextLarge } from './StyledComponent';
+import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
+import {DarkTextLarge} from './StyledComponent';
 
-const CameraComponent = ({onPhotoCapture, photoArray, deletePhoto,fields}) => {
+const CameraComponent = ({onPhotoCapture, photoArray, deletePhoto, fields}) => {
   const {hasPermission, requestPermission} = useCameraPermission();
 
   const cameraRef = useRef(null);
@@ -30,42 +30,43 @@ const CameraComponent = ({onPhotoCapture, photoArray, deletePhoto,fields}) => {
   const [showCapturedPhotos, setShowCapturedPhotos] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [isRareCamera, setIsRareCamera] = useState(true);
-  const [focusPoint, setFocusPoint] = useState({ x: 0, y: 0 });
-  const [zoom,setZoom] = useState(1);
-  const handleFocus = async (tapEvent) => {
+  const [focusPoint, setFocusPoint] = useState({x: 0, y: 0});
+  const [zoom, setZoom] = useState(1);
+  const [rotate,setRotate] = useState(0)
+  const handleFocus = async tapEvent => {
     // console.log("handleFocus =>",tapEvent)
     if (cameraRef.current) {
       try {
-        const { locationX, locationY } = tapEvent;
+        const {locationX, locationY} = tapEvent;
         const screenWidth = width; // Replace with your actual screen width
         const screenHeight = height; // Replace with your actual screen height
-  
+
         // Calculate the normalized coordinates (values between 0 and 1)
         const x = locationX / screenWidth;
         const y = locationY / screenHeight;
 
         // console.log("x => ",x)
         // console.log("y =>",y);
-  
+
         // Focus the camera at the specified point
-        await cameraRef.current.focus({ x, y });
+        await cameraRef.current.focus({x, y});
       } catch (error) {
         console.error('Error focusing the camera:', error);
       }
     }
   };
-  
+
   const requestCameraAndMicrophonePermission = async () => {
     const microphonePermission = Platform.select({
       ios: PERMISSIONS.IOS.MICROPHONE,
       android: PERMISSIONS.ANDROID.RECORD_AUDIO,
     });
-  
+
     const cameraPermission = Platform.select({
       ios: PERMISSIONS.IOS.CAMERA,
       android: PERMISSIONS.ANDROID.CAMERA,
     });
-  
+
     try {
       // Request microphone permission
       const microphonePermissionStatus = await check(microphonePermission);
@@ -77,7 +78,7 @@ const CameraComponent = ({onPhotoCapture, photoArray, deletePhoto,fields}) => {
           return;
         }
       }
-  
+
       // Request camera permission
       const cameraPermissionStatus = await check(cameraPermission);
       if (cameraPermissionStatus !== RESULTS.GRANTED) {
@@ -88,19 +89,19 @@ const CameraComponent = ({onPhotoCapture, photoArray, deletePhoto,fields}) => {
           return;
         }
       }
-  
+
       console.log('Microphone and camera permissions granted');
     } catch (err) {
       console.warn(err);
     }
   };
-  
-  useEffect(()=>{
-    if(fields.value.length > 0){
-      photoArray("",fields)
+
+  useEffect(() => {
+    if (fields.value.length > 0) {
+      photoArray('', fields);
     }
-    requestCameraAndMicrophonePermission
-  },[])
+    requestCameraAndMicrophonePermission;
+  }, []);
 
   const device = useCameraDevice(isRareCamera ? 'back' : 'front');
 
@@ -108,8 +109,19 @@ const CameraComponent = ({onPhotoCapture, photoArray, deletePhoto,fields}) => {
     return (
       <View style={styles.container}>
         <Text>Camera permission is required</Text>
-        <TouchableOpacity style={[{backgroundColor:THEME_COLOR,color:'white' ,width:'100%',borderRadius:10,padding:10},globalStyles.flexBox]} onPress={requestCameraAndMicrophonePermission}>
-          <Text style={{color:'white'}}>Request Permission</Text>
+        <TouchableOpacity
+          style={[
+            {
+              backgroundColor: THEME_COLOR,
+              color: 'white',
+              width: '100%',
+              borderRadius: 10,
+              padding: 10,
+            },
+            globalStyles.flexBox,
+          ]}
+          onPress={requestCameraAndMicrophonePermission}>
+          <Text style={{color: 'white'}}>Request Permission</Text>
         </TouchableOpacity>
       </View>
     );
@@ -133,20 +145,16 @@ const CameraComponent = ({onPhotoCapture, photoArray, deletePhoto,fields}) => {
     setSelectedImage(null); // Reset selected image when closing the camera
   };
 
- 
-  
-
   const handleCapturePhoto = async () => {
     // console.log("aa raha ahai");
     try {
-      
       const photo = await cameraRef.current.takePhoto();
       setCapturedPhotos(prevPhotos => [...prevPhotos, photo]);
       // console.log("aa raha ahai 2");
       setShowCapturedPhotos(true);
       let base64 = await imageToBase64(photo.path);
-    
-      photoArray(base64,fields);
+
+      photoArray(base64, fields);
       onPhotoCapture && onPhotoCapture(photo);
     } catch (error) {
       console.error('Error capturing photo:', error);
@@ -159,14 +167,12 @@ const CameraComponent = ({onPhotoCapture, photoArray, deletePhoto,fields}) => {
 
   const handleImageClick = index => {
     // console.log("photo click => ",photo);
-    if(capturedPhotos.length > 0){
+    if (capturedPhotos.length > 0) {
       setSelectedImage(capturedPhotos[index]);
-    }
-    else{
-      console.log("fields value => ",fields.value[index])
+    } else {
+      console.log('fields value => ', fields.value[index]);
       setSelectedImage(fields.value[index]);
     }
-
   };
 
   // Function to convert image to Base64
@@ -193,7 +199,7 @@ const CameraComponent = ({onPhotoCapture, photoArray, deletePhoto,fields}) => {
       throw error;
     }
   };
-  console.log("zoom =>",zoom)
+  // console.log("zoom =>",zoom)
 
   // Example usage
 
@@ -206,7 +212,9 @@ const CameraComponent = ({onPhotoCapture, photoArray, deletePhoto,fields}) => {
           globalStyles.flexBoxAlign,
         ]}
         onPress={handleOpenCamera}>
-        <Text style={styles.openCameraButtonText}>Click {fields.placeholder}</Text>
+        <Text style={styles.openCameraButtonText}>
+          Click {fields.placeholder}
+        </Text>
         <MaterialCommunityIcons
           name={'image-multiple'}
           color="white"
@@ -215,7 +223,7 @@ const CameraComponent = ({onPhotoCapture, photoArray, deletePhoto,fields}) => {
       </TouchableOpacity>
       {((capturedPhotos.length > 0 && showCapturedPhotos) ||
         (fields.value.length > 0 && !showCapturedPhotos)) && (
-        <View style={{ marginTop: 10, width: '90%' }}>
+        <View style={{marginTop: 10, width: '90%'}}>
           <FlatList
             data={
               showCapturedPhotos
@@ -225,21 +233,19 @@ const CameraComponent = ({onPhotoCapture, photoArray, deletePhoto,fields}) => {
                 : []
             }
             horizontal
-            renderItem={({ item, index }) => (
+            renderItem={({item, index}) => (
               <TouchableOpacity onPress={() => handleImageClick(index)}>
                 <Image
                   source={{
-                    uri: showCapturedPhotos
-                      ? `file://${item.path}`
-                      : item,
+                    uri: showCapturedPhotos ? `file://${item.path}` : item,
                   }}
-                  style={{ width: 100, height: 100, marginHorizontal: 2 }}
+                  style={{width: 100, height: 100, marginHorizontal: 2}}
                   key={index}
                 />
                 <TouchableOpacity
-                  onPress={async() => {
+                  onPress={async () => {
                     let base64 = await imageToBase64(item.path);
-                    deletePhoto(base64,fields);
+                    deletePhoto(base64, fields);
                     let arr = capturedPhotos.filter((_, ind) => ind !== index);
                     setCapturedPhotos(arr);
                     if (capturedPhotos.length == 1) {
@@ -265,7 +271,7 @@ const CameraComponent = ({onPhotoCapture, photoArray, deletePhoto,fields}) => {
       )}
 
       <Modal
-        style={{backgroundColor:'black'}}
+        style={{backgroundColor: 'black'}}
         animationType="slide"
         transparent={false}
         visible={isCameraOpen}>
@@ -280,13 +286,12 @@ const CameraComponent = ({onPhotoCapture, photoArray, deletePhoto,fields}) => {
             onInitialized={() => {
               // Initialization logic
             }}
-            
-            resizeMode='contain'
+            resizeMode="contain"
             zoom={zoom}
             onError={error => {
               console.error('Camera error:', error);
             }}
-            onTouchStart={(event) => {
+            onTouchStart={event => {
               // Handle touch events to focus the camera
               const tapEvent = event.nativeEvent;
               handleFocus(tapEvent);
@@ -298,18 +303,36 @@ const CameraComponent = ({onPhotoCapture, photoArray, deletePhoto,fields}) => {
             <MaterialCommunityIcons
               name={'camera-off'}
               size={40}
-              color={Platform.OS ==='android'?'black':'white'}
+              color={Platform.OS === 'android' ? 'black' : 'white'}
             />
           </TouchableOpacity>
           <TouchableOpacity
-            style={[{backgroundColor:'red',bottom:120,left:10,position:'absolute',padding:10,borderRadius:10}]}
-            onPress={()=>setZoom((prev)=> prev+0.1)}>
-            <DarkTextLarge style={{color:'white'}}>Zoom In +</DarkTextLarge>
+            style={[
+              {
+                backgroundColor: 'red',
+                bottom: 120,
+                left: 10,
+                position: 'absolute',
+                padding: 10,
+                borderRadius: 10,
+              },
+            ]}
+            onPress={() => setZoom(prev => prev + 0.4)}>
+            <DarkTextLarge style={{color: 'white'}}>Zoom In +</DarkTextLarge>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[{backgroundColor:'red',bottom:120,right:10,position:'absolute',padding:10,borderRadius:10}]}
-            onPress={()=>setZoom((prev)=> prev <= 1 ? 1 : prev-0.1)}>
-            <DarkTextLarge style={{color:'white'}}>Zoom out -</DarkTextLarge>
+            style={[
+              {
+                backgroundColor: 'red',
+                bottom: 120,
+                right: 10,
+                position: 'absolute',
+                padding: 10,
+                borderRadius: 10,
+              },
+            ]}
+            onPress={() => setZoom(prev => (prev <= 1 ? 1 : prev - 0.4))}>
+            <DarkTextLarge style={{color: 'white'}}>Zoom out -</DarkTextLarge>
           </TouchableOpacity>
           <View
             style={[
@@ -330,7 +353,10 @@ const CameraComponent = ({onPhotoCapture, photoArray, deletePhoto,fields}) => {
                 {capturedPhotos.length > 0 ? (
                   <TouchableOpacity
                     // key={index}
-                    onPress={() => {setIsCameraOpen(false), handleImageClick(capturedPhotos.length - 1)}}>
+                    onPress={() => {
+                      setIsCameraOpen(false),
+                        handleImageClick(capturedPhotos.length - 1);
+                    }}>
                     <Image
                       source={{
                         uri: `file://${
@@ -379,23 +405,34 @@ const CameraComponent = ({onPhotoCapture, photoArray, deletePhoto,fields}) => {
           transparent={false}
           visible={selectedImage != null}>
           <FlatList
-            data={showCapturedPhotos
-              ? capturedPhotos
-              : fields.value.length > 0
-              ? fields.value
-              : []}
+            data={
+              showCapturedPhotos
+                ? capturedPhotos
+                : fields.value.length > 0
+                ? fields.value
+                : []
+            }
             horizontal
             pagingEnabled
             renderItem={({item, index}) => (
               <View style={styles.modalContainer}>
                 {/* {console.log("asdfghjkl =",item.path)} */}
-                <Image
-                  source={{uri: showCapturedPhotos
-                    ? `file://${item.path}`
-                    : item,}}
-                  style={{width: width, height: height}}
-                  resizeMode="contain"
-                />
+                <View
+                  style={{
+                    // backgroundColor: 'red',
+                    width: width,
+                    height: height,
+                    transform: [{rotate: rotate+"deg"}],
+                  }}>
+                  <Image
+                    source={{
+                      uri: showCapturedPhotos ? `file://${item.path}` : item,
+                    }}
+                    style={{width: width, height: height}}
+                    resizeMode="contain"
+                  />
+                </View>
+
                 <TouchableOpacity
                   style={styles.closeCameraButton}
                   onPress={() => setSelectedImage(null)}>
@@ -406,10 +443,19 @@ const CameraComponent = ({onPhotoCapture, photoArray, deletePhoto,fields}) => {
                   />
                 </TouchableOpacity>
                 <TouchableOpacity
+                  style={styles.rotateImageButton}
+                  onPress={() => setRotate((prev)=> prev + 90)}>
+                  <MaterialCommunityIcons
+                    size={45}
+                    color={'black'}
+                    name={'crop-rotate'}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
                   style={styles.deleteImageButton}
-                  onPress={async() => {
+                  onPress={async () => {
                     let base64 = await imageToBase64(item.path);
-                    deletePhoto(base64,fields);
+                    deletePhoto(base64, fields);
                     let arr = capturedPhotos.filter((_, ind) => ind !== index);
                     setCapturedPhotos(arr);
                     if (capturedPhotos.length == 1) {
@@ -437,7 +483,7 @@ const styles = StyleSheet.create({
     flex: 1,
     // justifyContent: 'center',
     alignItems: 'center',
-    marginVertical:3
+    marginVertical: 3,
   },
   openCameraButton: {
     width: '90%',
@@ -455,7 +501,6 @@ const styles = StyleSheet.create({
   camera: {
     ...StyleSheet.absoluteFill,
     // width:width,
-  
   },
   captureButton: {
     // position: 'absolute',
@@ -484,6 +529,13 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 70,
     left: 0,
+    padding: 10,
+    borderRadius: 5,
+  },
+  rotateImageButton: {
+    position: 'absolute',
+    top: 70,
+    left: 70,
     padding: 10,
     borderRadius: 5,
   },

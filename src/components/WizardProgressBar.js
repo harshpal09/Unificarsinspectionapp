@@ -82,7 +82,7 @@ const WizardProgressBar = ({route}) => {
               <Text style={[styles.stepText, { color: index <=  wizobj.index ? 'white' : THEME_COLOR }]}>{index + 1}</Text>
             </TouchableOpacity>
           </View>
-          <FadeTextSmall style={{ width: 60, position: 'absolute', bottom: -20, left: -12, textAlign: 'center', color: index <= wizobj.index ? wizobj.success[wizobj.currentStep] ? "#22b527" : THEME_COLOR : 'grey' }}>
+          <FadeTextSmall style={{fontSize:9, width: 60, position: 'absolute', bottom: -20, left: -15, textAlign: 'center', color: index <= wizobj.index ? wizobj.success[wizobj.currentStep] ? "#22b527" : THEME_COLOR : 'grey' }}>
             {val.name}
           </FadeTextSmall>
           {index !== steps - 1 ? <View style={[styles.line, { width: 40, backgroundColor: index <= wizobj.index - 1 ? wizobj.success[wizobj.currentStep] ? "#22b527" : THEME_COLOR : LIGHT_BLUE_BACKGROUND }]} /> : <></>}
