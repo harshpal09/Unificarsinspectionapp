@@ -48,6 +48,9 @@
 	<string />
 	<key>NSMicrophoneUsageDescription</key>
 	<string>We need access to your microphone to record videos.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+<string>We need access to your photo library to select images for cropping.</string>
+
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>

@@ -34,6 +34,9 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import {allInspection} from '../services/Api';
 import { useFocusEffect } from '@react-navigation/native';
 import Search from '../components/Search';
+
+
+
 export default function NewInspection({navigation}) {
   const badges = useSelector(s => s.global.badges);
   const val = useSelector((s)=>s.global.userDetails)

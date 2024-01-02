@@ -33,8 +33,8 @@ import {getStateFromPath} from '@react-navigation/native';
 import {setWizardCurrentStep} from '../../redux/features/GlobalSlice';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { ParentContext } from '../wizardscreens/Step_1';
-import VideoComponent from './VideoComponent';
-
+import VideoComponent from './VideoComponent'
+import ImagePickerComponent from './ImagePickerComponent';
 
 const AccordionView = ({
   isSubChild,
@@ -171,7 +171,7 @@ const AccordionView = ({
 
 
   console.log('is subfieds',isSubChild)
-  // console.log('send data =>', send_data);
+  console.log('send data =>', send_data);
   // console.log('send data  length=>', send_data.engine_video != undefined ? send_data.engine_video.length:null);
 
   // console.log('photo image =>',clickedPhoto.length > 0 ?  clickedPhoto[0]._parts:null)
@@ -233,8 +233,8 @@ const AccordionView = ({
           />
         );
       case 'file':
-        return (
-          <CameraComponent deletePhoto={handleClickPhotoDelete} fields={field} photoArray={handleClickPhotoChange} />
+        return (        
+            <CameraComponent deletePhoto={handleClickPhotoDelete} fields={field} photoArray={handleClickPhotoChange} />
         );
       case 'video':
       return (
@@ -322,7 +322,7 @@ const AccordionView = ({
 
     }
   };
-  console.log("messgae  => ",error)
+  // console.log("messgae  => ",error)
 
   return (
     <SafeAreaView
@@ -334,11 +334,13 @@ const AccordionView = ({
           borderColor: 'lightgrey',
         },
       ]}>
+      {/* <ImagePickerComponent /> */}
       {expanded && (
         <Container>
           {field_data.map((field, index) => (
             <React.Fragment key={index}>{renderField(field)}</React.Fragment>
           ))}
+
           
           
           {(error.error != '' || error.success != '') && (
