@@ -79,8 +79,8 @@ android {
         applicationId "com.unificarsinspectionapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 9
-        versionName "3.0.2"
+        versionCode 11
+        versionName "3.0.4"
     }
     signingConfigs {
         release {

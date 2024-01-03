@@ -36,6 +36,7 @@ const CameraComponent = ({onPhotoCapture, photoArray, deletePhoto, fields}) => {
   const [focusPoint, setFocusPoint] = useState({x: 0, y: 0});
   const [zoom, setZoom] = useState(1);
   const [rotate,setRotate] = useState(0)
+
   const handleFocus = async tapEvent => {
     // console.log("handleFocus =>",tapEvent)
     if (cameraRef.current) {
@@ -148,8 +149,8 @@ const CameraComponent = ({onPhotoCapture, photoArray, deletePhoto, fields}) => {
   };
   const pickImageWithCrop = async() => {
     ImagePicker.openPicker({
-      width: 300,
-      height: 400,
+      width:(4/3) * 3264,
+      height:(4/3) * 2448,
       cropping: true,
     }).then(image => {
       console.log("from library",image);
@@ -161,31 +162,42 @@ const CameraComponent = ({onPhotoCapture, photoArray, deletePhoto, fields}) => {
        })     
     });
   };
+
+  const handleCropImage = async (path) => {
+    // Use react-native-image-crop-picker for cropping
+    const croppedImage = await ImagePicker.openCropper({
+      path: path,
+      
+      width:(4/3) * 3264,
+      height:(4/3) * 2448,
+      freeStyleCropEnabled: true, // Customize cropping UI
+    });
+
+  
+    return croppedImage
+  };
   const handleCloseCamera = () => {
-    // setCapturedPhotos([]);
     setIsCameraOpen(false);
     setSelectedImage(null); // Reset selected image when closing the camera
   };
 
   const handleCapturePhoto = async () => {
-    // console.log("aa raha ahai");
     try {
       const photo = await cameraRef.current.takePhoto();
-      setCapturedPhotos(prevPhotos => [...prevPhotos, photo]);
-      console.log("from camera=> ",photo);
-      setShowCapturedPhotos(true);
-      let base64 = await imageToBase64(photo.path);
 
+      const croppedImage = await handleCropImage(photo.path);
+
+      // console.log("this is crop image=>",croppedImage.path)
+      setCapturedPhotos(prevPhotos => [...prevPhotos, croppedImage]);
+      // console.log("from camera=> ",photo);
+      setShowCapturedPhotos(true);
+      let base64 = await imageToBase64(croppedImage.path);
       photoArray(base64, fields);
-      onPhotoCapture && onPhotoCapture(photo);
+      onPhotoCapture && onPhotoCapture(croppedImage);
     } catch (error) {
       console.error('Error capturing photo:', error);
     }
   };
-  // console.log("===========================================")
-
-  // console.log("capture photos => ",capturedPhotos,"fields key =>",fields.placeholder ," value fields => ",fields.value);
-  // console.log("===========================================")
 
   const handleImageClick = index => {
     // console.log("photo click => ",photo);
@@ -197,7 +209,6 @@ const CameraComponent = ({onPhotoCapture, photoArray, deletePhoto, fields}) => {
     }
   };
 
-  // Function to convert image to Base64
   const imageToBase64 = async imagePath => {
     try {
       // Fetch the image file using the 'file://' URI scheme
@@ -221,9 +232,8 @@ const CameraComponent = ({onPhotoCapture, photoArray, deletePhoto, fields}) => {
       throw error;
     }
   };
-  // console.log("zoom =>",zoom)
+  
 
-  // Example usage
 
   return (
     <View style={[styles.container]}>

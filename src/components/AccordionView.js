@@ -170,8 +170,8 @@ const AccordionView = ({
 
 
 
-  console.log('is subfieds',isSubChild)
-  console.log('send data =>', send_data);
+  // console.log('is subfieds',isSubChild)
+  // console.log('send data =>', send_data);
   // console.log('send data  length=>', send_data.engine_video != undefined ? send_data.engine_video.length:null);
 
   // console.log('photo image =>',clickedPhoto.length > 0 ?  clickedPhoto[0]._parts:null)
@@ -332,6 +332,7 @@ const AccordionView = ({
           borderWidth: expanded ? 1 : 0,
           borderTopWidth: 0,
           borderColor: 'lightgrey',
+          // paddingBottom:20
         },
       ]}>
       {/* <ImagePickerComponent /> */}
