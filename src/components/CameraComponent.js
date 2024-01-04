@@ -20,7 +20,6 @@ import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {DarkTextLarge} from './StyledComponent';
 import ImagePicker from 'react-native-image-crop-picker';
 
-
 const CameraComponent = ({onPhotoCapture, photoArray, deletePhoto, fields}) => {
   const {hasPermission, requestPermission} = useCameraPermission();
 
@@ -28,14 +27,14 @@ const CameraComponent = ({onPhotoCapture, photoArray, deletePhoto, fields}) => {
 
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [capturedPhotos, setCapturedPhotos] = useState([]);
-  const [cameraToggle,setCameraToggle] =useState(true);
+  const [cameraToggle, setCameraToggle] = useState(true);
   const [Photos, setPhotos] = useState([]);
   const [showCapturedPhotos, setShowCapturedPhotos] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [isRareCamera, setIsRareCamera] = useState(true);
   const [focusPoint, setFocusPoint] = useState({x: 0, y: 0});
   const [zoom, setZoom] = useState(1);
-  const [rotate,setRotate] = useState(0)
+  const [rotate, setRotate] = useState(0);
 
   const handleFocus = async tapEvent => {
     // console.log("handleFocus =>",tapEvent)
@@ -140,41 +139,43 @@ const CameraComponent = ({onPhotoCapture, photoArray, deletePhoto, fields}) => {
   }
 
   const handleOpenCamera = () => {
-    if(cameraToggle){
+    if (cameraToggle) {
       setIsCameraOpen(true);
-    }
-    else{
+    } else {
       pickImageWithCrop();
     }
   };
-  const pickImageWithCrop = async() => {
+  const pickImageWithCrop = async () => {
     ImagePicker.openPicker({
-      width:(4/3) * 3264,
-      height:(4/3) * 2448,
+      width: (4 / 3) * 3264,
+      height: (4 / 3) * 2448,
       cropping: true,
     }).then(image => {
-      console.log("from library",image);
+      console.log('from library', image);
       setCapturedPhotos(prevPhotos => [...prevPhotos, image]);
       setShowCapturedPhotos(true);
 
-       imageToBase64(image.path).then(base64 => {
-         photoArray(base64, fields);
-       })     
+      imageToBase64(image.path).then(base64 => {
+        photoArray(base64, fields);
+      });
     });
   };
 
-  const handleCropImage = async (path) => {
+  const handleCropImage = async path => {
     // Use react-native-image-crop-picker for cropping
-    const croppedImage = await ImagePicker.openCropper({
-      path: path,
-      
-      width:(4/3) * 3264,
-      height:(4/3) * 2448,
-      freeStyleCropEnabled: true, // Customize cropping UI
-    });
-
-  
-    return croppedImage
+    try {
+      // console.log('Before opening cropper');
+      const croppedImage = await ImagePicker.openCropper({
+        path: Platform.OS === "android" ? ('file://' + path) : path,
+        width: (4 / 3) * 3264,
+        height: (4 / 3) * 2448,
+        freeStyleCropEnabled: true,
+      });
+      // console.log('After opening cropper');
+      return croppedImage;
+    } catch (ee) {
+      console.log('error  => ', ee);
+    }
   };
   const handleCloseCamera = () => {
     setIsCameraOpen(false);
@@ -188,12 +189,13 @@ const CameraComponent = ({onPhotoCapture, photoArray, deletePhoto, fields}) => {
       const croppedImage = await handleCropImage(photo.path);
 
       // console.log("this is crop image=>",croppedImage.path)
-      setCapturedPhotos(prevPhotos => [...prevPhotos, croppedImage]);
+
+      setCapturedPhotos(prevPhotos => [...prevPhotos, photo]);
       // console.log("from camera=> ",photo);
       setShowCapturedPhotos(true);
-      let base64 = await imageToBase64(croppedImage.path);
+      let base64 = await imageToBase64(photo.path);
       photoArray(base64, fields);
-      onPhotoCapture && onPhotoCapture(croppedImage);
+      onPhotoCapture && onPhotoCapture(photo);
     } catch (error) {
       console.error('Error capturing photo:', error);
     }
@@ -232,17 +234,43 @@ const CameraComponent = ({onPhotoCapture, photoArray, deletePhoto, fields}) => {
       throw error;
     }
   };
-  
-
 
   return (
     <View style={[styles.container]}>
-      <View style={[{backgroundColor:'transparent',width:'90%',padding:5},globalStyles.rowContainer]}>
-        <TouchableOpacity style={[{borderWidth:cameraToggle ? 3 : 1,backgroundColor:cameraToggle ? 'grey':'white',borderColor:cameraToggle ? 'green' : 'grey',padding:5,margin:5}]} onPress={()=>setCameraToggle(true)}>
-          <MaterialCommunityIcons name={'camera'} size={40} color="black"/>
+      <View
+        style={[
+          {backgroundColor: 'transparent', width: '90%', padding: 5},
+          globalStyles.rowContainer,
+        ]}>
+        <TouchableOpacity
+          style={[
+            {
+              borderWidth: cameraToggle ? 3 : 1,
+              backgroundColor: cameraToggle ? 'grey' : 'white',
+              borderColor: cameraToggle ? 'green' : 'grey',
+              padding: 5,
+              margin: 5,
+            },
+          ]}
+          onPress={() => setCameraToggle(true)}>
+          <MaterialCommunityIcons name={'camera'} size={40} color="black" />
         </TouchableOpacity>
-        <TouchableOpacity style={[{borderWidth:!cameraToggle ? 3 : 1,backgroundColor:!cameraToggle ? 'grey':'white',borderColor:!cameraToggle ? 'green' : 'grey',padding:5,margin:5}]} onPress={()=>setCameraToggle(false)}>
-        <MaterialCommunityIcons name={'image-multiple'} size={40} color="black"/>
+        <TouchableOpacity
+          style={[
+            {
+              borderWidth: !cameraToggle ? 3 : 1,
+              backgroundColor: !cameraToggle ? 'grey' : 'white',
+              borderColor: !cameraToggle ? 'green' : 'grey',
+              padding: 5,
+              margin: 5,
+            },
+          ]}
+          onPress={() => setCameraToggle(false)}>
+          <MaterialCommunityIcons
+            name={'image-multiple'}
+            size={40}
+            color="black"
+          />
         </TouchableOpacity>
       </View>
       <TouchableOpacity
@@ -253,10 +281,10 @@ const CameraComponent = ({onPhotoCapture, photoArray, deletePhoto, fields}) => {
         ]}
         onPress={handleOpenCamera}>
         <Text style={styles.openCameraButtonText}>
-          {cameraToggle ? "Click":"Choose"}  {fields.placeholder}
+          {cameraToggle ? 'Click' : 'Choose'} {fields.placeholder}
         </Text>
         <MaterialCommunityIcons
-          name={cameraToggle ?"camera" :'image-multiple'}
+          name={cameraToggle ? 'camera' : 'image-multiple'}
           color="white"
           size={25}
         />
@@ -462,7 +490,7 @@ const CameraComponent = ({onPhotoCapture, photoArray, deletePhoto, fields}) => {
                     // backgroundColor: 'red',
                     width: width,
                     height: height,
-                    transform: [{rotate: rotate+"deg"}],
+                    transform: [{rotate: rotate + 'deg'}],
                   }}>
                   <Image
                     source={{
@@ -484,7 +512,7 @@ const CameraComponent = ({onPhotoCapture, photoArray, deletePhoto, fields}) => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.rotateImageButton}
-                  onPress={() => setRotate((prev)=> prev + 90)}>
+                  onPress={() => setRotate(prev => prev + 90)}>
                   <MaterialCommunityIcons
                     size={45}
                     color={'black'}
@@ -595,6 +623,3 @@ const styles = StyleSheet.create({
 });
 
 export default CameraComponent;
-
-
-

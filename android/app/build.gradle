@@ -79,6 +79,7 @@ android {
         applicationId "com.unificarsinspectionapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
+        vectorDrawables.useSupportLibrary = true
         versionCode 11
         versionName "3.0.4"
     }
