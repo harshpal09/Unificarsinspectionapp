@@ -7,6 +7,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { CompletedInspection, HomeScreen, MissInspection, NewInspection } from '../../export';
 import { THEME_COLOR } from '../utils/Style';
 import { useSelector } from 'react-redux';
+import Test from '../screens/Test';
 
 const HeaderTab = createMaterialTopTabNavigator();
 
@@ -93,6 +94,11 @@ const TopNavigation = () => {
             },
           })}
         />
+        {/* <HeaderTab.Screen
+          name="Test"
+          component={Test}
+          
+        /> */}
       </HeaderTab.Navigator>
     </SafeAreaView>
   );

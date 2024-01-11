@@ -1,4 +1,4 @@
-import React, {useEffect, useState,useContext} from 'react';
+import React, {useEffect, useState,useContext, useMemo} from 'react';
 import {
   View,
   Text,
@@ -35,6 +35,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { ParentContext } from '../wizardscreens/Step_1';
 import VideoComponent from './VideoComponent'
 import ImagePickerComponent from './ImagePickerComponent';
+import ImagePicker from 'react-native-image-crop-picker';
 
 const AccordionView = ({
   isSubChild,
@@ -85,17 +86,10 @@ const AccordionView = ({
 
 
   const wizobj = useSelector(state => state.global.wizardObj);
-  // console.log("wizard obj =>",wizobj);
+
   useEffect(() => {
     setData();
-    // changeData();
   }, []);
-  useEffect(() => {
-    
-    
-    // changeData();
-  }, [toggle]);
-
 
   const setData = async () => {
     try {
@@ -106,7 +100,6 @@ const AccordionView = ({
         user_id: JSON.parse(user).id,
         lead_id: profileDetails.id,
         form_type: title,
-        // ['rc_image']:'dfghjk' // Set the form_type value
       }));
     } catch (error) {
       console.log('error - ', error);
@@ -119,14 +112,12 @@ const AccordionView = ({
 
   const profileDetails = useSelector(state => state.global.profileDetails);
 
-  const handleTextInputChange = (event, field) => {
+  const handleTextInputChange = useMemo(() => (event, field) => {
+    setSendData(prevData => ({ ...prevData, [field.name]: event }));
+  }, []);
 
-    setSendData(prevData => ({...prevData, [field.name]: event}));
-  };
-
-  const handleClickPhotoChange = (photo,field) => {  
-
-    // console.log("photo before   ",photo);
+  const handleClickPhotoChange = useMemo(() => (photo,field) => {  
+    // console.log("asdfghj =>",photo)
     setSendData((prevData) => {
       // Create a copy of the object
       const newObj = { ...prevData };
@@ -145,28 +136,25 @@ const AccordionView = ({
       // Return the updated object
       return newObj;
     });
-  };
+  },[]);
 
-  const handleClickPhotoDelete = (photo,field) => {  
+  const clearTempFiles = () => {
+     ImagePicker.clean().then(() => {
+      console.log('removed all tmp images from tmp directory');
+    }).catch(e => {
+      Alert.alert(e);
+    });
+  }
 
-    // console.log("photo before   ",photo);
+  const handleClickPhotoDelete = useMemo(()=>(photo,field) => {  
+    
     setSendData((prevData) => {
-      // Create a copy of the object
       const newObj = { ...prevData };
-      // If the key exists in the object, push the photo to the array
-
       const newArray = newObj[field.name].filter((element) => element !== photo);
-
-      // if (newObj[field.name]) {
-      //   newObj[field.name].push(photo);
-      // } else {
-        // If the key does not exist, create a new array with the photo
-        newObj[field.name] = newArray;
-      // }
-      // Return the updated object
+      newObj[field.name] = newArray;
       return newObj;
     });
-  };
+  },[]);
 
 
 
@@ -234,12 +222,12 @@ const AccordionView = ({
         );
       case 'file':
         return (        
-            <CameraComponent deletePhoto={handleClickPhotoDelete} fields={field} photoArray={handleClickPhotoChange} />
+            <CameraComponent   deletePhoto={handleClickPhotoDelete} fields={field} photoArray={handleClickPhotoChange} />
         );
       case 'video':
       return (
-        <VideoComponent deletePhoto={handleClickPhotoDelete} fields={field} videoArray={handleClickPhotoChange} />
-      );
+        <CameraComponent mediaType={'video'} deletePhoto={handleClickPhotoDelete} fields={field} photoArray={handleClickPhotoChange} />
+        );
       case 'textarea':
         return (
           <CustomTextInput
@@ -283,7 +271,7 @@ const AccordionView = ({
           
 
           
-          console.log("message +++",res.data.data.message)
+          // console.log("message +++",res.data.data.message)
           
         setError(prev => ({
           ...prev,
@@ -319,7 +307,7 @@ const AccordionView = ({
     } catch {
     } finally {
       setToggle(false);
-
+      clearTempFiles();
     }
   };
   // console.log("messgae  => ",error)
@@ -366,12 +354,13 @@ const AccordionView = ({
                 globalStyles.flexBox,
               ]}
               onPress={onSubmit}
-              activeOpacity={0.9}
+              activeOpacity={0.5}
               disabled={toggle}
               >
               
-              {toggle ? (
+              {toggle ? (<View style={globalStyles.rowContainer}><DarkTextMedium style={{color:'#FFF'}} >Please wait...</DarkTextMedium>
                 <ActivityIndicator size={'small'} color={'white'} />
+                </View>
               ) : (
                 <DarkTextMedium style={{color: 'white'}}>Submit</DarkTextMedium>
               )}

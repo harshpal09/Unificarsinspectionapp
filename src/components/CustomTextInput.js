@@ -23,9 +23,11 @@ export default function CustomTextInput({name,fields,onInputChange,isTextArea}) 
   
   return (
     <View style={[globalStyles.flexBox,{backgroundColor:'transparent',width:'100%',paddingVertical:10}]}>
-      <TextInput onChange={handleInputChange} placeholderTextColor={ selectedvalue == '' ? 'red':LIGHT_BLUE} style={{backgroundColor:'transparent',width:'90%',padding:10,borderRadius:10,borderColor:selectedvalue == '' ? 'red':THEME_COLOR,borderWidth:1,fontWeight:'700'}} placeholder={"Enter "+fields.placeholder} defaultValue={fields.value} multiline numberOfLines={isTextArea ? 4:0} />
+      <TextInput  onChange={handleInputChange} placeholderTextColor={ selectedvalue == '' ? 'red':LIGHT_BLUE} style={{backgroundColor:'transparent',width:'90%',padding:10,color:THEME_COLOR,borderRadius:10,borderColor:selectedvalue == '' ? 'red':THEME_COLOR,borderWidth:1,fontWeight:'700'}} placeholder={"Enter "+fields.placeholder}  defaultValue={fields.value} multiline numberOfLines={isTextArea ? 4:0} />
     </View>
   )
 }
 
 const styles = StyleSheet.create({})
+
+
