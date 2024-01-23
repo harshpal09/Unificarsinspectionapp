@@ -561,7 +561,29 @@ import {globalStyles, height, width} from '../utils/Style';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import RNFS from 'react-native-fs';
 import Video from 'react-native-video';
+import AWS from 'aws-sdk';
 import ImagePicker from 'react-native-image-crop-picker';
+
+
+AWS.config.update({
+  accessKeyId: "42N2S71FD9WL4LT2KLTX",
+  secretAccessKey: "K8CYL38U1AOMHV97HW2OVF6AZE1GVZ918IQW270K",
+  endpoint: "https://objectstore.e2enetworks.net/unificars1/",
+  s3ForcePathStyle: true,
+  signatureVersion: "v4"
+});
+
+const s3 = new AWS.S3();
+const uploadFileToS3 = (bucketName, fileName, filePath) => {
+  const params = {
+    Bucket: bucketName,
+    Key: fileName,
+    Body: filePath,
+  };
+  return s3.upload(params).promise();
+};
+
+
 
 export default function CameraComponent({
   onPhotoCapture,
@@ -594,10 +616,17 @@ export default function CameraComponent({
         multiple:true,
         
       };
-
       const result = await ImagePicker.openCamera(options);
-
       // Check if the user canceled the operation
+      const fileContent = await RNFS.readFile(result.path, 'base64');
+      try{
+      const bucketName = 'unificars1';
+      await uploadFileToS3(bucketName, "image.jpg", fileContent)
+        console. log ('File uploaded:', "image.jpg");
+      } catch (uploadError){ 
+        console.error ('Error uploading file:', uploadError);
+      }
+
       if (result && result.path) {
         setMediaArray(prev => [...prev, result]);
 
