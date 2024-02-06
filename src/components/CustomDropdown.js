@@ -22,7 +22,7 @@ const CustomDropdown = ({fields,onInputChange}) => {
   }, [])
 
   const handleSelect = (value) => {
-    console.log("text =",value)
+    // console.log("text =",value)
     onInputChange(value,fields);
     setSelectedValue(value);
     setIsOpen(false);

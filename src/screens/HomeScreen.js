@@ -119,7 +119,7 @@ export default function HomeScreen({navigation}) {
           renderItem={item => (
             <ItemContainer
               onPress={() => {
-                navigation.navigate('Step_1', {id: 4444});
+                navigation.navigate('formtopnavigation', {id: 4444});
                 dispatch(setProfileDetails(item.item));
               }}
               style={{width: '100%'}}>

@@ -566,23 +566,49 @@ import ImagePicker from 'react-native-image-crop-picker';
 
 
 AWS.config.update({
-  accessKeyId: "42N2S71FD9WL4LT2KLTX",
-  secretAccessKey: "K8CYL38U1AOMHV97HW2OVF6AZE1GVZ918IQW270K",
-  endpoint: "https://objectstore.e2enetworks.net/unificars1/",
+  accessKeyId: "IWKHUTZSSWFGYTOGCDFV",
+  secretAccessKey: "6GC9S088963BV821794YHTE1TND9XXFJKZBONZYO",
+  endpoint: "https://objectstore.e2enetworks.net",
   s3ForcePathStyle: true,
   signatureVersion: "v4"
 });
 
 const s3 = new AWS.S3();
-const uploadFileToS3 = (bucketName, fileName, filePath) => {
-  const params = {
-    Bucket: bucketName,
-    Key: fileName,
-    Body: filePath,
-  };
-  return s3.upload(params).promise();
-};
+// const uploadFileToS3 = (bucketName, fileName, filePath) => {
+//   const fileContent = fs.readFileSync(filePath);
 
+//   const params = {
+//     Bucket: bucketName,
+//     Key: fileName,
+//     Body: fileContent,
+//     ContentType: 'image/jpeg', // Adjust the content type based on your image type
+//     // Other optional parameters can be added here
+//   };
+//   return s3.upload(params).promise();
+// };
+const uploadImageToS3 = async (bucketName, fileName, filePath) => {
+  try {
+    // Read the image file content as a base64-encoded string
+    const fileContent = await RNFS.readFile(filePath, 'base64');
+
+    const params = {
+      Bucket: bucketName,
+      Key: fileName,
+      Body: fileContent,
+      // ContentEncoding: 'base64', // Specify the encoding
+      ContentType: 'image/png',
+      ACL: 'public-read',
+      // Other optional parameters can be added here
+    };
+
+    const data = await s3.upload(params).promise();
+    console.log('Image uploaded successfully:', data.Location);
+    return data;
+  } catch (error) {
+    console.error('Error uploading image:', error);
+    throw error;
+  }
+};
 
 
 export default function CameraComponent({
@@ -614,18 +640,36 @@ export default function CameraComponent({
         compressImageQuality: 0.1,
         mediaType: mediaType,
         multiple:true,
-        
+        includeBase64:true
       };
       const result = await ImagePicker.openCamera(options);
       // Check if the user canceled the operation
-      const fileContent = await RNFS.readFile(result.path, 'base64');
-      try{
-      const bucketName = 'unificars1';
-      await uploadFileToS3(bucketName, "image.jpg", fileContent)
-        console. log ('File uploaded:', "image.jpg");
-      } catch (uploadError){ 
-        console.error ('Error uploading file:', uploadError);
-      }
+      // const fileContent = await RNFS.readFile(result.path, 'base64');
+
+      console.log("file content => ",result)
+
+
+      const bucketName = 'your-s3-bucket-name';
+
+      const fileName = 'your-file-name.txt';
+      const filePath = '';
+
+      uploadImageToS3(bucketName, fileName, filePath)
+        .then(data => {
+          console.log('File uploaded successfully:', data.Location);
+        })
+        .catch(error => {
+          console.error('Error uploading file:', error);
+        });
+
+      // return;
+      // try{
+      // const bucketName = 'inspectionapp';
+      // const res = await uploadImageToS3(bucketName, "image57.jpg",result.path )
+      //   console. log ('File uploaded:', res);
+      // } catch (uploadError){ 
+      //   console.error ('Error uploading file:', uploadError);
+      // }
 
       if (result && result.path) {
         setMediaArray(prev => [...prev, result]);
@@ -656,9 +700,32 @@ export default function CameraComponent({
         height: (4 / 3) * 2448,
         cropping: mediaType == 'video' ? false : true,
         mediaType: mediaType,
+        includeBase64:true,
       };
 
       const result = await ImagePicker.openPicker(options);
+
+      console.log("path -> ",result.path);
+      const bucketName = 'inspectionapp';
+
+      const fileName = 'slllllslocalFile.png';
+      const filePath = result.path;
+
+      uploadImageToS3(bucketName, fileName, filePath)
+        .then(data => {
+          console.log('File uploaded successfully:', data.Location);
+        })
+        .catch(error => {
+          console.error('Error uploading file:', error);
+        });
+
+      // try{
+      //   const bucketName = 'inspectionapp';
+      //   const res = await uploadImageToS3(bucketName, "imagelocal.jpeg",result.path )
+      //     console. log ('File uploaded:', res);
+      //   } catch (uploadError){ 
+      //     console.error ('Error uploading file:', uploadError);
+      //   }
 
       // Check if the user canceled the operation
       if (result && result.path) {

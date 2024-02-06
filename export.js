@@ -1,7 +1,15 @@
 export {default as HomeScreen} from './src/screens/HomeScreen'
 export {default as MyInspection} from './src/screens/MyInspection'
 export {default as BottomTabs} from './src/navigations/BottomTabs'
+export {default as FormTopNavigation} from './src/navigations/FormTopNavigation'
+
 export {default as TopNavigation} from './src/navigations/TopNavigation'
+export {default as Documents} from './src/FormTopNavigation/Documents'
+export {default as Exterior} from './src/FormTopNavigation/Exterior'
+export {default as Interior} from './src/FormTopNavigation/Interior'
+export {default as Final} from './src/FormTopNavigation/Final'
+export {default as Engine} from './src/FormTopNavigation/Engine'
+
 export {default as Login} from './src/screens/Login'
 export {default as AccountSection} from './src/screens/AccountSection'
 export {default as NewInspection} from './src/screens/NewInspection'

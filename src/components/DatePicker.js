@@ -2,7 +2,7 @@ import React, { useState ,useEffect} from 'react';
 import { StyleSheet, Text, TextInput, View, TouchableWithoutFeedback, Keyboard, TouchableOpacity } from 'react-native';
 import DateTimePicker from 'react-native-ui-datepicker';
 import dayjs from 'dayjs';
-import { LIGHT_BLUE, THEME_COLOR, globalStyles } from '../utils/Style';
+import { LIGHT_BLUE, THEME_COLOR, globalStyles, width } from '../utils/Style';
 import { LightThemeColorTextMedium } from './StyledComponent';
 
 export default function DatePicker({fields,onInputChange}) {
@@ -24,11 +24,11 @@ export default function DatePicker({fields,onInputChange}) {
   }, [])
   return (
     <TouchableWithoutFeedback onPress={handlePressOutside}>
-      <View style={styles.container}>
+      <View style={[styles.container,{width:width},globalStyles.flexBox]}>
         <View
           style={[
             globalStyles.flexBox,
-            { backgroundColor: 'transparent', width: '100%', paddingVertical: 10 },
+            { backgroundColor: 'transparent', width: '90%', paddingVertical: 10 },
           ]}>
           <TouchableOpacity
             style={{

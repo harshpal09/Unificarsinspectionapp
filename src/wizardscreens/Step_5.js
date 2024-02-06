@@ -5,7 +5,7 @@ import {InspectionDetails} from '../../export'
 export default function Step_5() {
   return (
     <View>
-        <InspectionDetails />
+      <InspectionDetails  />
       <Text>Step_5</Text>
     </View>
   )
