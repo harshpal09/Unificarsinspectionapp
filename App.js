@@ -15,7 +15,7 @@ LogBox.ignoreAllLogs();
 const App = () => {
 
   const isuserLoggedIn = useSelector((state)=> state.global.isUserLoggedIn)
-  console.log('badges =>',isuserLoggedIn)
+  // console.log('badges =>',isuserLoggedIn)
   const val = useSelector((s)=>s.global.userDetails)
   
   var user_data = typeof val === 'object' ? val : JSON.parse(val);

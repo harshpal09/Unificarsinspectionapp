@@ -19,6 +19,7 @@ import {
   isLoggedIn,
   setAll,
   setBadges,
+  setFormData,
   setProfileDetails,
 } from '../../redux/features/GlobalSlice';
 import {THEME_COLOR, globalStyles, height, width} from '../utils/Style';
@@ -120,6 +121,12 @@ export default function HomeScreen({navigation}) {
             <ItemContainer
               onPress={() => {
                 navigation.navigate('formtopnavigation', {id: 4444});
+
+                dispatch(setFormData({
+                  lead_id:item.item.id,
+                  user_id:user_data.id
+                }))
+                // console.log("details =>",item.item.id);
                 dispatch(setProfileDetails(item.item));
               }}
               style={{width: '100%'}}>

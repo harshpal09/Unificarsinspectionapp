@@ -25,6 +25,7 @@
     "base-64": "^1.0.0",
     "base64-js": "^1.5.1",
     "dayjs": "^1.11.10",
+    "hermes-engine": "^0.11.0",
     "lz-string": "^1.5.0",
     "nativewind": "^4.0.13",
     "pako": "^2.1.0",

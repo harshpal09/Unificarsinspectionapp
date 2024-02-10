@@ -16,6 +16,9 @@ const initialState = {
     },
     successStep:-1,
   },
+  formData:{
+
+  },
   profileDetails:{
 
   },
@@ -63,10 +66,13 @@ export const GlobalSlice = createSlice({
     },
     setMiss:(state,action)=>{
       state.miss = action.payload
+    },
+    setFormData:(state,action)=>{
+      state.formData = action.payload
     }
   },
 });
 
-export const { isLoggedIn, setWizardCurrentStep,setProfileDetails ,setUserDetails,setCompleted,setAll,setToday,setMiss} = GlobalSlice.actions;
+export const { isLoggedIn, setFormData,setWizardCurrentStep,setProfileDetails ,setUserDetails,setCompleted,setAll,setToday,setMiss} = GlobalSlice.actions;
 
 export default GlobalSlice.reducer;

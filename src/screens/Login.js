@@ -22,7 +22,7 @@ const Stack = createStackNavigator();
 const LoginComponent = () => {
   const isuserLoggedIn = useSelector((state)=> state.global.isUserLoggedIn)
   const dispatch = useDispatch();
-  console.log("user  =>",isuserLoggedIn)
+  // console.log("user  =>",isuserLoggedIn)
   const [focusInEmail,setFocusInEmail] = useState(false)
   const [focusInPass,setFocusInPass] = useState(false)
   const [email,setEmail] = useState('')

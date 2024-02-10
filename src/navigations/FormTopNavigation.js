@@ -39,10 +39,11 @@ const FormTopNavigation = () => {
           tabBarInactiveTintColor: 'grey',
           tabBarStyle: {},
           tabBarLabelStyle: {
-            fontSize: 6,
+            fontSize: 10,
             fontWeight: '800',
           },
-        })}>
+        })}
+      >
         <HeaderTab.Screen name="documents" component={Documents} />
         <HeaderTab.Screen name="exterior" component={Exterior} />
         <HeaderTab.Screen name="interior" component={Interior} />

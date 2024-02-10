@@ -1,4 +1,4 @@
-import React, {useState,useEffect} from 'react';
+import React, {useState,useEffect, useContext} from 'react';
 import {
   View,
   Text,
@@ -14,6 +14,9 @@ import {
 } from './StyledComponent';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
+import { useDispatch, useSelector } from 'react-redux';
+import { setFormData } from '../../redux/features/GlobalSlice';
+import { InnerFlatListContext } from './InnerFlatList';
 
 const MultiSelectDropdown = ({fields,onInputChange}) => {
 
@@ -22,14 +25,26 @@ const MultiSelectDropdown = ({fields,onInputChange}) => {
   const [selectedOptions, setSelectedOptions] = useState(fields.value != ""  ? fields.value.split(", ") :[]);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState('');
+  const updateFromValues = useContext(InnerFlatListContext);
+
+  const api_send_data = useSelector(state => state.global.formData);
+  const dispatch = useDispatch();
+
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
 
   useEffect(() => {
     // Notify the parent component when the selection changes
-    onInputChange(selectedOptions.join(', '), fields);
+    // onInputChange(selectedOptions.join(', '), fields);
+    if(selectedOptions.length == 0) return;
+    if(typeof updateFromValues == 'function'){
+      updateFromValues(fields.type,selectedOptions.join(', '));
+    }
   }, [selectedOptions]);
+
+    // console.log("api send data =>",api_send_data)
+
 
   const handleSelect = item => {
     // Check if the item is already selected

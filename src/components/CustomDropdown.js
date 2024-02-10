@@ -1,8 +1,11 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState,useEffect, useContext } from 'react';
 import { View, Text, TouchableOpacity, TextInput, FlatList, StyleSheet } from 'react-native';
 import { THEME_COLOR, globalStyles, width } from '../utils/Style';
 import { LightThemeColorTextMedium, ThemeColorTextMedium } from './StyledComponent';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useDispatch, useSelector } from 'react-redux';
+import { setFormData } from '../../redux/features/GlobalSlice';
+import { InnerFlatListContext } from './InnerFlatList';
 
 const CustomDropdown = ({fields,onInputChange}) => {
 
@@ -10,7 +13,10 @@ const CustomDropdown = ({fields,onInputChange}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState(fields.value);
   const [searchQuery, setSearchQuery] = useState('');
-  
+  const api_send_data = useSelector(state => state.global.formData);
+  const updateFromValues = useContext(InnerFlatListContext);
+
+  const dispatch = useDispatch();
   const options = ['Select a option','Option 1', 'Option 2', 'Option 3', 'Another Option', 'One More Option'];
 
   const toggleDropdown = () => {
@@ -18,15 +24,20 @@ const CustomDropdown = ({fields,onInputChange}) => {
   };
 
   useEffect(() => {
+    if(selectedValue == "") return;
     handleSelect(fields.value)
   }, [])
 
   const handleSelect = (value) => {
     // console.log("text =",value)
-    onInputChange(value,fields);
+    // onInputChange(value,fields);
+    if(typeof updateFromValues == 'function'){
+      updateFromValues(fields.type,value)
+    }
     setSelectedValue(value);
     setIsOpen(false);
   };
+  // console.log("api send data =>",api_send_data)
 
   const handleSearch = (query) => {
     setSearchQuery(query);
