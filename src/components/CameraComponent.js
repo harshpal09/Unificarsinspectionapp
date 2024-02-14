@@ -1154,15 +1154,16 @@ AWS.config.update({
 
 
 const s3 = new AWS.S3();
-const uploadFileToS3 = (bucketName, fileName, filePath) => {
+const uploadImageToS3 = (bucketName, fileName, imageData, contentType) => {
   const params = {
     Bucket: bucketName,
     Key: fileName,
-    Body: filePath,
-    
+    Body: imageData,
+    ContentType: contentType // Specify the content type here
   };
   return s3.upload(params).promise();
 };
+
 
 
 export default function CameraComponent({
@@ -1205,11 +1206,12 @@ export default function CameraComponent({
       setString(result.data);
 
 
+      console.log("result  => ",result.mime);
       const bucketName = 'inspectionapp';
 
-      const fileName = 'yourfilename.png';
+      const fileName = 'harshpal';
 
-      uploadFileToS3(bucketName, fileName, result.data)
+      uploadImageToS3(bucketName, fileName, result.data,result.mime)
         .then(data => {
           console.log('File uploaded successfully:', data.Location);
         })
